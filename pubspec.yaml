@@ -1,0 +1,40 @@
+name: evistal_1
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_blue_plus: ^1.35.5
+  permission_handler: ^11.3.1
+  provider: ^6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_native_splash: ^2.4.1
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/background.png
+
+flutter_native_splash:
+  color: "#F2F8FF"
+  image: assets/images/appimg_android12.png
+  android_12:
+    image: assets/images/appimg_android12.png
+    icon_background_color: "#F2F8FF"
+  web: false
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/appimage_1.png
+  adaptive_icon_background: "#F2F8FF"
