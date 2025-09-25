@@ -161,7 +161,7 @@ class _HumidifierScreenBody extends StatelessWidget {
                     Text(
                       'Renk: ${_colorModeLabel(colorMode)}',
                       style: const TextStyle(
-                        color: _accent,
+                        color: Color.fromARGB(255, 27, 8, 135),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
