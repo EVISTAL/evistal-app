@@ -54,7 +54,7 @@ class _HumidifierScreenBody extends StatelessWidget {
     final shortest = MediaQuery.of(context).size.shortestSide;
     final outer = (shortest * 0.55).clamp(220.0, 300.0);
     final ring = outer;
-    final inner = outer * 0.76;
+    final inner = outer * 0.77;
     final colorMode = context.watch<HumidifierController>().colorMode;
     final diffuserMode = context.watch<HumidifierController>().diffuserMode;
 
@@ -84,7 +84,7 @@ class _HumidifierScreenBody extends StatelessWidget {
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
-                          colors: [_card, _deepBlue],
+                          colors: [_card, Color.fromARGB(255, 8, 38, 114)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -125,7 +125,7 @@ class _HumidifierScreenBody extends StatelessWidget {
                                   fontSize: 24,
                                   fontWeight: FontWeight.w800,
                                   color: _deepBlue,
-                                  letterSpacing: 0.3,
+                                  letterSpacing: 0.35,
                                 ),
                               ),
                             ),
