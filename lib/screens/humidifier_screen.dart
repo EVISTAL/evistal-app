@@ -1,3 +1,4 @@
+// lib/screens/humidifier_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/humidifier_controller.dart';
@@ -20,92 +21,93 @@ class _HumidifierScreenBody extends StatelessWidget {
   final Device device;
   const _HumidifierScreenBody({required this.device});
 
-  static const _bg = Color(0xFFF2F8FF);
-  static const _card = Color(0xFF85C9FF);
-  static const _deepBlue = Color(0xFF002686);
-  static const _accent = Color(0xFF13007F);
+  // 🎨 Palet (lacivert tema)
+  static const kBg       = Color(0xFFF2F8FF);
+  static const kPrimary  = Color(0xFF1D4ED8); // İSTENEN TON
+  static const kDark     = Color(0xFF1E3A8A);
+  static const kTextDeep = Color(0xFF002686);
+  static const kAccent   = Color(0xFF13007F);
 
   String _colorModeLabel(int mode) {
     switch (mode) {
-      case 1:
-        return 'Rainbow';
-      case 2:
-        return 'RGB';
-      case 3:
-        return 'Beyaz';
-      default:
-        return 'Kapalı';
+      case 1: return 'Rainbow';
+      case 2: return 'RGB';
+      case 3: return 'Beyaz';
+      default: return 'Kapalı';
     }
   }
 
   String _diffuserModeLabel(int mode) {
     switch (mode) {
-      case 1:
-        return 'Kapalı';
-      case 2:
-        return 'Mod 1';
-      default:
-        return 'Mod 2';
+      case 1: return 'Kapalı';
+      case 2: return 'Mod 1';
+      default: return 'Mod 2';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final shortest = MediaQuery.of(context).size.shortestSide;
-    final outer = (shortest * 0.55).clamp(220.0, 300.0);
-    final ring = outer;
-    final inner = outer * 0.77;
-    final colorMode = context.watch<HumidifierController>().colorMode;
+    final shortest   = MediaQuery.of(context).size.shortestSide;
+    final outer      = (shortest * 0.56).clamp(220.0, 320.0);
+    final inner      = outer * 0.74;
+
+    final colorMode    = context.watch<HumidifierController>().colorMode;
     final diffuserMode = context.watch<HumidifierController>().diffuserMode;
 
     return Scaffold(
-      backgroundColor: _bg,
+      backgroundColor: kBg,
       appBar: AppBar(
         title: const Text('Nemlendirici'),
-        backgroundColor: _card,
+        backgroundColor: kPrimary,
         foregroundColor: Colors.white,
         elevation: 0,
-        actions: const [],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Column(
             children: [
+              // 🔵 Gradient halka + animasyonlu bilgi
               SizedBox(
-                width: ring,
-                height: ring,
+                width: outer,
+                height: outer,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
+                    // Dış gradient halka
                     Container(
-                      width: ring,
-                      height: ring,
+                      width: outer,
+                      height: outer,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
-                          colors: [_card, Color.fromARGB(255, 8, 38, 114)],
+                          colors: [kPrimary, kDark],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                       ),
                     ),
+                    // İç beyaz daire (kabartma)
                     Container(
                       width: inner,
                       height: inner,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        // hafif radial parlama
+                        gradient: RadialGradient(
+                          colors: [Colors.white, Colors.white.withOpacity(0.96)],
+                          radius: 0.9,
+                        ),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            // ignore: deprecated_member_use
-                            color: Colors.black.withOpacity(0.12),
+                            color: Colors.black.withOpacity(0.10),
                             blurRadius: 18,
                             offset: const Offset(0, 10),
                           ),
                         ],
                       ),
                     ),
+                    // Mod metni + ikon (animasyonlu)
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: AnimatedSwitcher(
@@ -122,15 +124,15 @@ class _HumidifierScreenBody extends StatelessWidget {
                                 _diffuserModeLabel(diffuserMode),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 26,
                                   fontWeight: FontWeight.w800,
-                                  color: _deepBlue,
+                                  color: kTextDeep,
                                   letterSpacing: 0.35,
                                 ),
                               ),
                             ),
                             const SizedBox(height: 8),
-                            const Icon(Icons.eco, color: _deepBlue, size: 24),
+                            const Icon(Icons.eco, color: kTextDeep, size: 24),
                           ],
                         ),
                       ),
@@ -138,37 +140,42 @@ class _HumidifierScreenBody extends StatelessWidget {
                   ],
                 ),
               ),
+
               const SizedBox(height: 18),
+
+              // 🎨 Renk modu chip (daha belirgin)
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(999),
                   boxShadow: [
                     BoxShadow(
-                      // ignore: deprecated_member_use
                       color: Colors.black.withOpacity(0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.palette_outlined, size: 18, color: _accent),
+                    const Icon(Icons.palette_outlined, size: 18, color: kAccent),
                     const SizedBox(width: 8),
                     Text(
                       'Renk: ${_colorModeLabel(colorMode)}',
                       style: const TextStyle(
-                        color: Color.fromARGB(255, 27, 8, 135),
-                        fontWeight: FontWeight.w600,
+                        color: kAccent,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
                 ),
               ),
+
               const SizedBox(height: 20),
+
+              // 🔷 Dropdown (kapsül – lacivert)
               Align(
                 alignment: Alignment.center,
                 child: ConstrainedBox(
@@ -176,17 +183,22 @@ class _HumidifierScreenBody extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     decoration: BoxDecoration(
-                      color: _card,
+                      color: kPrimary,
                       borderRadius: BorderRadius.circular(22),
+                      boxShadow: [
+                        BoxShadow(
+                          color: kPrimary.withOpacity(0.25),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Theme(
-                      data: Theme.of(context).copyWith(
-                        canvasColor: _card,
-                      ),
+                      data: Theme.of(context).copyWith(canvasColor: kPrimary),
                       child: DropdownButton<String>(
                         value: device.name,
                         iconEnabledColor: Colors.white,
-                        dropdownColor: _card,
+                        dropdownColor: kPrimary,
                         isExpanded: true,
                         underline: const SizedBox.shrink(),
                         style: const TextStyle(color: Colors.white),
@@ -195,30 +207,36 @@ class _HumidifierScreenBody extends StatelessWidget {
                             value: name,
                             child: Row(
                               children: [
-                                const Icon(Icons.device_hub, color: Colors.white70, size: 18),
+                                const Icon(Icons.device_hub,
+                                    color: Colors.white70, size: 18),
                                 const SizedBox(width: 8),
                                 Text(name, style: const TextStyle(color: Colors.white)),
                               ],
                             ),
                           );
                         }).toList(),
-                        onChanged: (_) {},
+                        onChanged: (_) {}, // ileride çoklu cihaz için
                       ),
                     ),
                   ),
                 ),
               ),
+
               const SizedBox(height: 26),
+
+              // 🔘 Difüzör & Renk butonları
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _roundAction(
                     label: 'Difüzör',
-                    onTap: () => context.read<HumidifierController>().nextDiffuserMode(),
+                    onTap: () =>
+                        context.read<HumidifierController>().nextDiffuserMode(),
                   ),
                   _roundAction(
                     label: 'Renk',
-                    onTap: () => context.read<HumidifierController>().nextColorMode(),
+                    onTap: () =>
+                        context.read<HumidifierController>().nextColorMode(),
                   ),
                 ],
               ),
@@ -229,25 +247,25 @@ class _HumidifierScreenBody extends StatelessWidget {
     );
   }
 
+  // Ortak yuvarlak aksiyon butonu
   Widget _roundAction({required String label, required VoidCallback onTap}) {
     return Material(
-      color: _card,
+      color: kPrimary,
       shape: const CircleBorder(),
-      elevation: 2,
-      // ignore: deprecated_member_use
-      shadowColor: Colors.black.withOpacity(0.12),
+      elevation: 3,
+      shadowColor: Colors.black.withOpacity(0.14),
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,
         child: SizedBox(
-          width: 112,
-          height: 112,
+          width: 116,
+          height: 116,
           child: Center(
             child: Text(
               label,
               style: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 letterSpacing: 0.2,
               ),
             ),

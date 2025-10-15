@@ -1,11 +1,50 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart'; // Butonla geçilecek ekran
+import 'package:shared_preferences/shared_preferences.dart';
+// Butonla geçilecek ekran
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkFirstLaunch();
+  }
+
+  Future<void> _checkFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+    
+    // Eğer ilk açılış değilse direkt ana sayfaya yönlendir
+    if (!isFirstLaunch && mounted) {
+      Navigator.pushReplacementNamed(context, '/home');
+      return;
+    }
+    
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Loading durumunda loading göster
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: Color(0xFFF2F8FF),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -81,11 +120,13 @@ class SplashScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => const HomeScreen()),
-                        );
+                      onPressed: () async {
+                        // İlk açılış işaretini false olarak kaydet
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('isFirstLaunch', false);
+                        
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushReplacementNamed(context, '/home');
                       },
                       child: const Text(
                         'LET GET STARTED',
