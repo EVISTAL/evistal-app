@@ -16,6 +16,10 @@ class Device {
     this.currentLightMode = LightMode.kapali,
   });
 
+  String? get displayName => null;
+
+  set customName(String customName) {}
+
   // Mod butonuna basınca çağrılır
   void nextMode() {
     switch (currentMode) {
