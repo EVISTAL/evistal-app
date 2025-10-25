@@ -247,18 +247,6 @@ Vurgu Rengi (Accent):      #13007F  // Koyu mor-mavi
 
 ---
 
-## 🔄 Gelecek Özellikler (Roadmap)
-
-- [ ] Zamanlayıcı özelliği
-- [ ] Çoklu cihaz profilleri
-- [ ] Otomasyon senaryoları
-- [ ] Veri loglaması ve grafik gösterimi
-- [ ] WiFi üzerinden kontrol desteği
-- [ ] Sesli asistan entegrasyonu
-- [ ] Tema özelleştirme
-
----
-
 ## 🤝 Katkıda Bulunma
 
 Katkılarınızı memnuniyetle karşılıyoruz! Katkıda bulunmak için:
