@@ -61,25 +61,34 @@ class AppColors {
   // RGB MODE COLORS (For Purifier Control)
   // ============================================================================
   
-  // Mode 0 (Off)
+  // Mode 0 - Gri Duman
   static const Color rgbMode0Start = Color(0xFF9CA3AF); // gray-400
   static const Color rgbMode0End = Color(0xFF6B7280); // gray-500
   static const Color rgbMode0Light = Color(0xFF9CA3AF);
   
-  // Mode 1 (Cyan/Blue)
-  static const Color rgbMode1Start = Color(0xFF22D3EE); // cyan-400
+  // Mode 1 - RGB Geçiş (Kırmızı → Yeşil → Mavi)
+  static const Color rgbMode1Red = Color(0xFFEF4444); // red-500
+  static const Color rgbMode1Green = Color(0xFF22C55E); // green-500
+  static const Color rgbMode1Blue = Color(0xFF3B82F6); // blue-500
+  static const Color rgbMode1Start = Color(0xFFEF4444); // red-500
   static const Color rgbMode1End = Color(0xFF3B82F6); // blue-500
-  static const Color rgbMode1Light = Color(0xFF22D3EE);
+  static const Color rgbMode1Light = Color(0xFFEF4444);
   
-  // Mode 2 (Purple/Pink)
-  static const Color rgbMode2Start = Color(0xFFC084FC); // purple-400
-  static const Color rgbMode2End = Color(0xFFEC4899); // pink-500
-  static const Color rgbMode2Light = Color(0xFFC084FC);
+  // Mode 2 - Gökkuşağı
+  static const Color rgbMode2Red = Color(0xFFFF0000); // Red
+  static const Color rgbMode2Orange = Color(0xFFFF7F00); // Orange
+  static const Color rgbMode2Yellow = Color(0xFFFFFF00); // Yellow
+  static const Color rgbMode2Green = Color(0xFF00FF00); // Green
+  static const Color rgbMode2Blue = Color(0xFF0000FF); // Blue
+  static const Color rgbMode2Purple = Color(0xFF8B00FF); // Purple
+  static const Color rgbMode2Start = Color(0xFFFF0000); // Red
+  static const Color rgbMode2End = Color(0xFF8B00FF); // Purple
+  static const Color rgbMode2Light = Color(0xFFFF0000);
   
-  // Mode 3 (Green/Emerald)
-  static const Color rgbMode3Start = Color(0xFF4ADE80); // green-400
-  static const Color rgbMode3End = Color(0xFF10B981); // emerald-500
-  static const Color rgbMode3Light = Color(0xFF4ADE80);
+  // Mode 3 - Beyaz Duman
+  static const Color rgbMode3Start = Color(0xFFFFFFFF); // White
+  static const Color rgbMode3End = Color(0xFFF3F4F6); // gray-100
+  static const Color rgbMode3Light = Color(0xFFFFFFFF);
   
   // ============================================================================
   // ACTIVE ELEMENT GRADIENTS

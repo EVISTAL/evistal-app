@@ -369,8 +369,8 @@ class _StatusInfoBar extends StatelessWidget {
   }
 }
 
-/// Purifier Görselleştirme
-class _PurifierVisualization extends StatelessWidget {
+/// Purifier Görselleştirme - Animasyonlu RGB Modları
+class _PurifierVisualization extends StatefulWidget {
   final bool isDarkMode;
   final int rgbMode;
   final bool isOn;
@@ -385,10 +385,105 @@ class _PurifierVisualization extends StatelessWidget {
     required this.scrollOffset,
   });
 
+  @override
+  State<_PurifierVisualization> createState() => _PurifierVisualizationState();
+}
+
+class _PurifierVisualizationState extends State<_PurifierVisualization>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _colorAnimationController;
+  late Animation<double> _colorAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _colorAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3000), // 3 saniye
+    )..repeat(); // Sonsuz tekrar
+
+    _colorAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _colorAnimationController,
+        curve: Curves.linear,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _colorAnimationController.dispose();
+    super.dispose();
+  }
+
+  /// RGB Mode'a göre animasyonlu renk hesapla
+  Color _getAnimatedColor(int rgbMode, double animationValue) {
+    switch (rgbMode) {
+      case 0:
+        // Mod 0: Gri (sabit)
+        return AppColors.rgbMode0Light;
+
+      case 1:
+        // Mod 1: Kırmızı → Yeşil → Mavi → Kırmızı (yumuşak döngü)
+        if (animationValue < 0.33) {
+          // Kırmızı → Yeşil geçiş (0.0 - 0.33)
+          final t = animationValue / 0.33;
+          return Color.lerp(
+            AppColors.rgbMode1Red,
+            AppColors.rgbMode1Green,
+            t,
+          )!;
+        } else if (animationValue < 0.66) {
+          // Yeşil → Mavi geçiş (0.33 - 0.66)
+          final t = (animationValue - 0.33) / 0.33;
+          return Color.lerp(
+            AppColors.rgbMode1Green,
+            AppColors.rgbMode1Blue,
+            t,
+          )!;
+        } else {
+          // Mavi → Kırmızı geçiş (0.66 - 1.0)
+          final t = (animationValue - 0.66) / 0.34;
+          return Color.lerp(
+            AppColors.rgbMode1Blue,
+            AppColors.rgbMode1Red,
+            t,
+          )!;
+        }
+
+      case 2:
+        // Mod 2: Gökkuşağı (6 renk, her biri ~2 saniye)
+        final rainbowColors = [
+          AppColors.rgbMode2Red,
+          AppColors.rgbMode2Orange,
+          AppColors.rgbMode2Yellow,
+          AppColors.rgbMode2Green,
+          AppColors.rgbMode2Blue,
+          AppColors.rgbMode2Purple,
+        ];
+
+        final segment = 1.0 / rainbowColors.length;
+        final index = (animationValue / segment).floor();
+        final nextIndex = (index + 1) % rainbowColors.length;
+        final t = (animationValue % segment) / segment;
+
+        return Color.lerp(
+          rainbowColors[index],
+          rainbowColors[nextIndex],
+          t,
+        )!;
+
+      case 3:
+        // Mod 3: Beyaz (sabit)
+        return AppColors.rgbMode3Light;
+
+      default:
+        return AppColors.rgbMode0Light;
+    }
+  }
+
   /// Duman/Buhar efektleri oluştur - Serbest yayılan duman
-  List<Widget> _buildSmokeEffects(int rgbMode) {
-    final smokeColor = AppColors.getRgbLightColor(rgbMode);
-    
+  List<Widget> _buildSmokeEffects(Color smokeColor) {
     return [
       // Duman Bulutu 1 (Sola yayılan)
       Positioned(
@@ -759,34 +854,40 @@ class _PurifierVisualization extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 270,
-      child: Stack(
-        clipBehavior: Clip.none, // Duman çerçeve dışına çıkabilir
-        alignment: Alignment.center,
-        children: [
-          // RGB Glow Effects - Gerçekçi Yayılan Işık
-          if (isOn) ...[
-            // Ana Glow (Merkez - daha yoğun)
-            Positioned(
-              top: 40,
-              child: Container(
-                width: 280,
-                height: 280,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.5),
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.3),
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.15),
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.05),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
-                  ),
-                ),
-              )
+    return AnimatedBuilder(
+      animation: _colorAnimation,
+      builder: (context, child) {
+        // Animasyonlu rengi hesapla
+        final currentColor = _getAnimatedColor(widget.rgbMode, _colorAnimation.value);
+        
+        return SizedBox(
+          height: 270,
+          child: Stack(
+            clipBehavior: Clip.none, // Duman çerçeve dışına çıkabilir
+            alignment: Alignment.center,
+            children: [
+              // RGB Glow Effects - Gerçekçi Yayılan Işık
+              if (widget.isOn) ...[
+                // Ana Glow (Merkez - daha yoğun)
+                Positioned(
+                  top: 40,
+                  child: Container(
+                    width: 280,
+                    height: 280,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          currentColor.withOpacity(0.5),
+                          currentColor.withOpacity(0.3),
+                          currentColor.withOpacity(0.15),
+                          currentColor.withOpacity(0.05),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
+                      ),
+                    ),
+                  )
                   .animate(
                     onPlay: (controller) => controller.repeat(),
                   )
@@ -824,19 +925,19 @@ class _PurifierVisualization extends StatelessWidget {
                   ),
             ),
 
-            // Dış Glow (Daha geniş, daha hafif)
-            Positioned(
-              top: -20,
-              child: Container(
-                width: 340,
-                height: 340,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.transparent,
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.08),
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.04),
+                // Dış Glow (Daha geniş, daha hafif)
+                Positioned(
+                  top: -20,
+                  child: Container(
+                    width: 340,
+                    height: 340,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          Colors.transparent,
+                          currentColor.withOpacity(0.08),
+                          currentColor.withOpacity(0.04),
                       Colors.transparent,
                     ],
                     stops: const [0.0, 0.4, 0.7, 1.0],
@@ -861,25 +962,25 @@ class _PurifierVisualization extends StatelessWidget {
                   ),
             ),
 
-            // Alt Yansıma Glow
-            Positioned(
-              bottom: -30,
-              child: Container(
-                width: 240,
-                height: 160,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.3),
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.15),
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.05),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.4, 0.7, 1.0],
-                  ),
-                ),
-              )
+                // Alt Yansıma Glow
+                Positioned(
+                  bottom: -30,
+                  child: Container(
+                    width: 240,
+                    height: 160,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          currentColor.withOpacity(0.3),
+                          currentColor.withOpacity(0.15),
+                          currentColor.withOpacity(0.05),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.4, 0.7, 1.0],
+                      ),
+                    ),
+                  )
                   .animate(
                     onPlay: (controller) => controller.repeat(),
                   )
@@ -898,79 +999,81 @@ class _PurifierVisualization extends StatelessWidget {
                   ),
             ),
 
-            // Duman/Buhar Efekti (Üstten yükselen)
-            ..._buildSmokeEffects(rgbMode),
-          ],
-
-          // Device Structure - Double Pyramid Humidifier (Floating)
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 220,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Çift Piramit - Floating Animasyonlu (yukarı/aşağı)
-                    _buildDoublePyramid(isDarkMode)
-                        .animate(
-                          onPlay: (controller) => controller.repeat(),
-                        )
-                        .moveY(
-                          duration: 3000.ms,
-                          begin: -8,
-                          end: 8,
-                          curve: Curves.easeInOut,
-                        )
-                        .then()
-                        .moveY(
-                          duration: 3000.ms,
-                          begin: 8,
-                          end: -8,
-                          curve: Curves.easeInOut,
-                        ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Base
-              Container(
-                width: 180,
-                height: 32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: isDarkMode
-                        ? [AppColors.darkCardBackground, AppColors.darkCardBackgroundAlt]
-                        : [AppColors.lightGray400, AppColors.lightGray500],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isDarkMode
-                          ? Colors.black.withOpacity(0.5)
-                          : AppColors.lightGray500.withOpacity(0.3),
-                      blurRadius: isDarkMode ? 24 : 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-              ),
+              // Duman/Buhar Efekti (Üstten yükselen)
+              ..._buildSmokeEffects(currentColor),
             ],
-          )
-              .animate()
-              .slideY(
-                duration: AppConstants.durationNormal.ms,
-                delay: 300.ms,
-                begin: 0.3,
-                curve: Curves.easeOut,
+
+              // Device Structure - Double Pyramid Humidifier (Floating)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 220,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Çift Piramit - Floating Animasyonlu (yukarı/aşağı)
+                        _buildDoublePyramid(widget.isDarkMode)
+                            .animate(
+                              onPlay: (controller) => controller.repeat(),
+                            )
+                            .moveY(
+                              duration: 3000.ms,
+                              begin: -8,
+                              end: 8,
+                              curve: Curves.easeInOut,
+                            )
+                            .then()
+                            .moveY(
+                              duration: 3000.ms,
+                              begin: 8,
+                              end: -8,
+                              curve: Curves.easeInOut,
+                            ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Base
+                  Container(
+                    width: 180,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(AppConstants.radiusFull),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: widget.isDarkMode
+                            ? [AppColors.darkCardBackground, AppColors.darkCardBackgroundAlt]
+                            : [AppColors.lightGray400, AppColors.lightGray500],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: widget.isDarkMode
+                              ? Colors.black.withOpacity(0.5)
+                              : AppColors.lightGray500.withOpacity(0.3),
+                          blurRadius: widget.isDarkMode ? 24 : 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               )
-              .fadeIn(duration: AppConstants.durationNormal.ms, delay: 300.ms),
-        ],
-      ),
+                  .animate()
+                  .slideY(
+                    duration: AppConstants.durationNormal.ms,
+                    delay: 300.ms,
+                    begin: 0.3,
+                    curve: Curves.easeOut,
+                  )
+                  .fadeIn(duration: AppConstants.durationNormal.ms, delay: 300.ms),
+            ],
+          ),
+        );
+      },
     );
   }
 }
