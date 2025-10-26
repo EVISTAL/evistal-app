@@ -34,6 +34,7 @@ class ControlCard extends StatelessWidget {
         child: AnimatedContainer(
           duration: Duration(milliseconds: AppConstants.durationThemeSwitch),
           curve: Curves.easeInOut,
+          height: 140, // Sabit yükseklik - tüm kartlar eşit
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppConstants.radiusXl),
             color: isActive && activeBackgroundColor != null
@@ -96,12 +97,16 @@ class ControlCardContent extends StatelessWidget {
         if (customIcon != null)
           customIcon!
         else if (icon != null)
-          Icon(
-            icon,
-            size: AppConstants.iconSizeLarge,
-            color: isDarkMode
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+          SizedBox(
+            width: AppConstants.iconSizeLarge,
+            height: AppConstants.iconSizeLarge,
+            child: Icon(
+              icon,
+              size: AppConstants.iconSizeLarge,
+              color: isDarkMode
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+            ),
           ),
 
         if (icon != null || customIcon != null)

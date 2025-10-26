@@ -206,7 +206,7 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                                     curve: Curves.elasticOut,
                                   ),
                             ),
-                            value: purifierState.rgbMode.toString(),
+                            value: 'Mode',
                             label: 'RGB Light',
                             isDarkMode: isDarkMode,
                           ),
@@ -431,8 +431,8 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
         child: Container(
           width: 120,
           height: 120,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
             gradient: RadialGradient(
               colors: [
                 smokeColor.withOpacity(0.25),
@@ -491,9 +491,9 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
               ],
               stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
             ),
-          ),
-        )
-            .animate(
+                ),
+              )
+                  .animate(
               onPlay: (controller) => controller.repeat(),
             )
             .moveY(
@@ -514,8 +514,8 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
               duration: 5000.ms,
               curve: Curves.easeOut,
               delay: 1000.ms,
-            )
-            .scale(
+                  )
+                  .scale(
               duration: 5000.ms,
               begin: const Offset(0.5, 0.5),
               end: const Offset(3.2, 3.8),
@@ -799,34 +799,34 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
         // Animasyonlu rengi hesapla
         final currentColor = _getAnimatedColor(widget.rgbMode, _colorAnimation.value);
         
-        return SizedBox(
+    return SizedBox(
           height: 270,
-          child: Stack(
+      child: Stack(
             clipBehavior: Clip.none, // Duman çerçeve dışına çıkabilir
-            alignment: Alignment.center,
-            children: [
+        alignment: Alignment.center,
+        children: [
               // RGB Glow Effects - Gerçekçi Yayılan Işık
               if (widget.isOn) ...[
                 // Ana Glow (Merkez - daha yoğun)
-                Positioned(
+            Positioned(
                   top: 40,
                   child: Container(
                     width: 280,
                     height: 280,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
                           currentColor.withOpacity(0.5),
                           currentColor.withOpacity(0.3),
                           currentColor.withOpacity(0.15),
                           currentColor.withOpacity(0.05),
-                          Colors.transparent,
-                        ],
+                      Colors.transparent,
+                    ],
                         stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
-                      ),
-                    ),
-                  )
+                  ),
+                ),
+              )
                   .animate(
                     onPlay: (controller) => controller.repeat(),
                   )
@@ -865,15 +865,15 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
             ),
 
                 // Dış Glow (Daha geniş, daha hafif)
-                Positioned(
+            Positioned(
                   top: -20,
                   child: Container(
                     width: 340,
                     height: 340,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
                           Colors.transparent,
                           currentColor.withOpacity(0.08),
                           currentColor.withOpacity(0.04),
@@ -907,7 +907,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                   child: Container(
                     width: 240,
                     height: 160,
-                    decoration: BoxDecoration(
+                decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
@@ -948,9 +948,9 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                 children: [
                   SizedBox(
                     height: 220,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
                         // Çift Piramit - Floating Animasyonlu (yukarı/aşağı)
                         _buildDoublePyramid(widget.isDarkMode)
                             .animate(
@@ -976,14 +976,14 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                   const SizedBox(height: 16),
 
                   // Base - RGB Mode'a Göre Parlayan Taban
-                  Container(
+                      Container(
                     width: 180,
                     height: 32,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(AppConstants.radiusFull),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
                         colors: widget.isOn
                             ? [
                                 currentColor.withOpacity(0.4),
@@ -999,9 +999,9 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                               width: 1.5,
                             )
                           : null,
-                      boxShadow: [
+                              boxShadow: [
                         // Ana gölge
-                        BoxShadow(
+                                BoxShadow(
                           color: widget.isDarkMode
                               ? Colors.black.withOpacity(0.5)
                               : AppColors.lightGray500.withOpacity(0.3),
@@ -1013,7 +1013,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                           BoxShadow(
                             color: currentColor.withOpacity(0.6),
                             blurRadius: 32,
-                            spreadRadius: 2,
+                                  spreadRadius: 2,
                             offset: const Offset(0, 4),
                           ),
                         if (widget.isOn)
@@ -1022,32 +1022,32 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                             blurRadius: 48,
                             spreadRadius: 4,
                             offset: const Offset(0, 8),
-                          ),
-                      ],
-                    ),
-                  )
-                      .animate(
+                                ),
+                              ],
+                            ),
+                          )
+                              .animate(
                         onPlay: (controller) => widget.isOn ? controller.repeat() : null,
-                      )
-                      .custom(
+                              )
+                              .custom(
                         duration: 2000.ms,
-                        builder: (context, value, child) {
+                                builder: (context, value, child) {
                           return Transform.scale(
                             scale: widget.isOn ? 1.0 + (value * 0.03) : 1.0,
-                            child: child,
-                          );
-                        },
-                      )
-                      .then()
-                      .custom(
+                                    child: child,
+                                  );
+                                },
+                              )
+                              .then()
+                              .custom(
                         duration: 2000.ms,
-                        builder: (context, value, child) {
+                                builder: (context, value, child) {
                           return Transform.scale(
                             scale: widget.isOn ? 1.03 - (value * 0.03) : 1.0,
-                            child: child,
-                          );
-                        },
-                      ),
+                                    child: child,
+                                  );
+                                },
+                              ),
                 ],
               )
                   .animate()
@@ -1327,7 +1327,7 @@ class _DeviceInfoPanel extends StatelessWidget {
       margin: const EdgeInsets.all(AppConstants.radiusXl),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppConstants.radiusXl * 1.5),
-        color: isDarkMode
+                            color: isDarkMode
             ? AppColors.darkCardBackgroundAlt
             : Colors.white,
         boxShadow: [
@@ -1430,9 +1430,9 @@ class _DeviceInfoPanel extends StatelessWidget {
                     .animate()
                     .fadeIn(duration: AppConstants.durationNormal.ms)
                     .scale(begin: const Offset(0.8, 0.8)),
-              ],
-            ),
-          ),
+                    ],
+                  ),
+                ),
 
           // Content
           Padding(
@@ -1521,21 +1521,21 @@ class _DeviceInfoPanel extends StatelessWidget {
       child: Row(
         children: [
           // İkon
-          Container(
+              Container(
             width: 48,
             height: 48,
-            decoration: BoxDecoration(
+                decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
+                  gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
                   color.withOpacity(0.8),
                   color,
                 ],
-              ),
-              boxShadow: [
-                BoxShadow(
+                  ),
+                  boxShadow: [
+                    BoxShadow(
                   color: color.withOpacity(0.4),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
@@ -1570,14 +1570,14 @@ class _DeviceInfoPanel extends StatelessWidget {
                   style: TextStyle(
                     fontSize: AppConstants.fontSizeBody,
                     fontWeight: FontWeight.w700,
-                    color: isDarkMode
+                      color: isDarkMode
                         ? AppColors.darkTextPrimary
                         : AppColors.lightTextPrimary,
                   ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
 
           // Copy Icon
           Container(
@@ -1595,8 +1595,8 @@ class _DeviceInfoPanel extends StatelessWidget {
           ),
         ],
       ),
-    )
-        .animate()
+          )
+              .animate()
         .fadeIn(duration: AppConstants.durationNormal.ms, delay: delay.ms)
         .slideX(begin: 0.3, duration: AppConstants.durationNormal.ms);
   }
@@ -1614,13 +1614,13 @@ class _DisconnectDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Container(
         padding: const EdgeInsets.all(AppConstants.spacing2Xl),
-        decoration: BoxDecoration(
+            decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppConstants.radiusXl * 1.5),
-          color: isDarkMode
-              ? AppColors.darkCardBackgroundAlt
+              color: isDarkMode
+                  ? AppColors.darkCardBackgroundAlt
               : Colors.white,
-          boxShadow: [
-            BoxShadow(
+              boxShadow: [
+                BoxShadow(
               color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.2),
               blurRadius: 30,
               offset: const Offset(0, 10),
@@ -1681,17 +1681,17 @@ class _DisconnectDialog extends StatelessWidget {
                 .fadeIn(duration: AppConstants.durationNormal.ms, delay: 100.ms)
                 .slideY(begin: -0.2, duration: AppConstants.durationNormal.ms),
 
-            const SizedBox(height: AppConstants.spacingSm),
+        const SizedBox(height: AppConstants.spacingSm),
 
             // Description
-            Text(
+        Text(
               'Are you sure you want to disconnect from EVISTAL\'s Humidifier?',
-              style: TextStyle(
+          style: TextStyle(
                 fontSize: AppConstants.fontSizeBody,
-                color: isDarkMode
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
-              ),
+            color: isDarkMode
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
               textAlign: TextAlign.center,
             )
                 .animate()
@@ -1702,7 +1702,7 @@ class _DisconnectDialog extends StatelessWidget {
 
             // Buttons
             Row(
-              children: [
+      children: [
                 // Cancel Button
                 Expanded(
                   child: GestureDetector(
@@ -1713,7 +1713,7 @@ class _DisconnectDialog extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(AppConstants.radiusMd),
-                        color: isDarkMode
+          color: isDarkMode
                             ? AppColors.darkCardBackground
                             : AppColors.lightGray200,
                       ),
@@ -1722,10 +1722,10 @@ class _DisconnectDialog extends StatelessWidget {
                         style: TextStyle(
                           fontSize: AppConstants.fontSizeBody,
                           fontWeight: FontWeight.w600,
-                          color: isDarkMode
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
+          color: isDarkMode
+              ? AppColors.darkTextPrimary
+              : AppColors.lightTextPrimary,
+        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
