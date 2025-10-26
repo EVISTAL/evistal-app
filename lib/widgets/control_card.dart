@@ -1,0 +1,140 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/theme_provider.dart';
+import '../utils/colors.dart';
+import '../utils/constants.dart';
+
+/// Kontrol Kartı Widget
+/// Purifier kontrol ekranındaki butonlar için
+class ControlCard extends StatelessWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final bool isActive;
+  final Color? activeBackgroundColor;
+  final Color? activeShadowColor;
+
+  const ControlCard({
+    super.key,
+    required this.child,
+    this.onTap,
+    this.isActive = false,
+    this.activeBackgroundColor,
+    this.activeShadowColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedScale(
+        duration: Duration(milliseconds: AppConstants.durationFast),
+        scale: 1.0,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: AppConstants.durationThemeSwitch),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppConstants.radiusXl),
+            color: isActive && activeBackgroundColor != null
+                ? activeBackgroundColor
+                : (isDarkMode
+                    ? AppColors.darkCardBackgroundAlt
+                    : AppColors.lightGray100),
+            boxShadow: [
+              // Outer shadow
+              BoxShadow(
+                color: isActive && activeShadowColor != null
+                    ? activeShadowColor!.withOpacity(isDarkMode ? 0.2 : 0.4)
+                    : (isDarkMode
+                        ? Colors.black.withOpacity(0.5)
+                        : Colors.black.withOpacity(0.08)),
+                blurRadius: isActive ? 20 : (isDarkMode ? 30 : 25),
+                offset: Offset(0, isDarkMode ? 10 : 8),
+              ),
+              // Inner shadow
+              BoxShadow(
+                color: Colors.white.withOpacity(isDarkMode ? 0.03 : 0.9),
+                blurRadius: isDarkMode ? 5 : 3,
+                offset: const Offset(0, 1),
+                spreadRadius: 0,
+                blurStyle: BlurStyle.inner,
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(AppConstants.radiusXl),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+/// Kontrol Kartı İçeriği - Icon ve Label ile
+class ControlCardContent extends StatelessWidget {
+  final IconData? icon;
+  final String? value;
+  final String label;
+  final bool isDarkMode;
+  final Widget? customIcon;
+
+  const ControlCardContent({
+    super.key,
+    this.icon,
+    this.value,
+    required this.label,
+    required this.isDarkMode,
+    this.customIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Icon veya custom icon
+        if (customIcon != null)
+          customIcon!
+        else if (icon != null)
+          Icon(
+            icon,
+            size: AppConstants.iconSizeLarge,
+            color: isDarkMode
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+
+        if (icon != null || customIcon != null)
+          const SizedBox(height: AppConstants.radiusMd),
+
+        // Value
+        if (value != null) ...[
+          Text(
+            value!,
+            style: TextStyle(
+              fontSize: AppConstants.iconSizeLarge,
+              fontWeight: FontWeight.w600,
+              color: isDarkMode
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+            ),
+          ),
+          const SizedBox(height: AppConstants.spacingSm),
+        ],
+
+        // Label
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: AppConstants.fontSizeSubheadline,
+            color: isDarkMode
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+}
+
