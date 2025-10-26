@@ -47,6 +47,13 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
     );
   }
 
+  void _showDisconnectConfirmation(BuildContext context, bool isDarkMode) {
+    showDialog(
+      context: context,
+      builder: (context) => _DisconnectDialog(isDarkMode: isDarkMode),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
@@ -107,17 +114,49 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                       ),
                       const SizedBox(width: AppConstants.spacingLg),
 
-                      // Oscillation Control
+                      // EVISTAL Logo
                       Expanded(
                         child: ControlCard(
-                          onTap: () => deviceProvider.toggleOscillation(),
+                          onTap: () {},
                           child: ControlCardContent(
-                            customIcon: _OscillationIcon(
-                              isActive: purifierState.oscillation,
-                              isDarkMode: isDarkMode,
+                            customIcon: SizedBox(
+                              width: AppConstants.iconSizeLarge,
+                              height: AppConstants.iconSizeLarge,
+                              child: Image.asset(
+                                'assets/images/evistal_logo.png',
+                                fit: BoxFit.contain,
+                                color: isDarkMode ? Colors.white : Colors.black,
+                                colorBlendMode: BlendMode.srcIn,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // Eğer logo yüklenemezse "E" harfi göster
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          const Color(0xFF3B82F6),
+                                          const Color(0xFF1D4ED8),
+                                        ],
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'E',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                            value: purifierState.oscillation ? 'ON' : 'OFF',
-                            label: 'Oscillation',
+                            value: 'v2.1',
+                            label: 'EVISTAL',
                             isDarkMode: isDarkMode,
                           ),
                         ),
@@ -214,19 +253,16 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                       ),
                       const SizedBox(width: AppConstants.spacingLg),
 
-                      // Air Flow
+                      // Disconnect
                       Expanded(
                         child: ControlCard(
-                          onTap: () => deviceProvider.toggleAirFlow(),
-                          isActive: purifierState.airFlow,
-                          activeBackgroundColor: isDarkMode
-                              ? AppColors.airFlowBgDark
-                              : AppColors.airFlowBgLight,
-                          activeShadowColor: const Color(0xFF3B82F6),
+                          onTap: () => _showDisconnectConfirmation(context, isDarkMode),
+                          activeBackgroundColor: const Color(0xFFEF4444).withOpacity(0.15),
+                          activeShadowColor: const Color(0xFFEF4444),
                           child: ControlCardContent(
-                            icon: LucideIcons.wind,
-                            value: purifierState.airFlow ? 'ON' : 'OFF',
-                            label: 'Air flow',
+                            icon: LucideIcons.powerOff,
+                            value: 'BLE',
+                            label: 'Disconnect',
                             isDarkMode: isDarkMode,
                           ),
                         ),
@@ -252,14 +288,13 @@ class _HeaderBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Close Button
-        GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Icon(
-            LucideIcons.x,
-            size: AppConstants.iconSizeMedium,
+        // Title
+        Text(
+          'My Purifier',
+          style: TextStyle(
+            fontSize: AppConstants.fontSizeTitle,
+            fontWeight: FontWeight.w600,
             color: isDarkMode
                 ? AppColors.darkTextPrimary
                 : AppColors.lightTextPrimary,
@@ -267,29 +302,7 @@ class _HeaderBar extends StatelessWidget {
         )
             .animate()
             .fadeIn(duration: AppConstants.durationNormal.ms)
-            .scale(begin: const Offset(0.8, 0.8)),
-
-        // Title
-        Expanded(
-          child: Center(
-            child: Text(
-              'My Purifier',
-              style: TextStyle(
-                fontSize: AppConstants.fontSizeTitle,
-                fontWeight: FontWeight.w500,
-                color: isDarkMode
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-              ),
-            )
-                .animate()
-                .fadeIn(duration: AppConstants.durationNormal.ms)
-                .slideY(begin: -0.3, duration: AppConstants.durationNormal.ms),
-          ),
-        ),
-
-        // Boş alan (sağ tarafta simetri için)
-        const SizedBox(width: AppConstants.iconSizeMedium),
+            .slideX(begin: -0.2, duration: AppConstants.durationNormal.ms),
       ],
     );
   }
@@ -1053,57 +1066,6 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
   }
 }
 
-/// Oscillation Icon - Animasyonlu salınım ikonu
-class _OscillationIcon extends StatelessWidget {
-  final bool isActive;
-  final bool isDarkMode;
-
-  const _OscillationIcon({
-    required this.isActive,
-    required this.isDarkMode,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          LucideIcons.chevronLeft,
-          size: AppConstants.iconSizeSmall,
-          color: isDarkMode
-              ? AppColors.darkTextPrimary
-              : AppColors.lightTextPrimary,
-        ),
-        const SizedBox(width: AppConstants.spacingXs),
-        Icon(
-          LucideIcons.chevronRight,
-          size: AppConstants.iconSizeSmall,
-          color: isDarkMode
-              ? AppColors.darkTextPrimary
-              : AppColors.lightTextPrimary,
-        ),
-      ],
-    )
-        .animate(
-          onPlay: isActive ? (controller) => controller.repeat() : null,
-        )
-        .slideX(
-          duration: AppConstants.durationToggle.ms,
-          begin: -0.05,
-          end: 0.05,
-          curve: Curves.easeInOut,
-        )
-        .then()
-        .slideX(
-          duration: AppConstants.durationToggle.ms,
-          begin: 0.05,
-          end: -0.05,
-          curve: Curves.easeInOut,
-        );
-  }
-}
-
 /// Çift Piramit Painter (Kum Saati Şekli) - Estetik 3D Versiyonu
 class _DoublePyramidPainter extends CustomPainter {
   final bool isDarkMode;
@@ -1637,5 +1599,198 @@ class _DeviceInfoPanel extends StatelessWidget {
         .animate()
         .fadeIn(duration: AppConstants.durationNormal.ms, delay: delay.ms)
         .slideX(begin: 0.3, duration: AppConstants.durationNormal.ms);
+  }
+}
+
+/// Disconnect Confirmation Dialog - Bağlantı kesme onay dialog'u
+class _DisconnectDialog extends StatelessWidget {
+  final bool isDarkMode;
+
+  const _DisconnectDialog({required this.isDarkMode});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(AppConstants.spacing2Xl),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppConstants.radiusXl * 1.5),
+          color: isDarkMode
+              ? AppColors.darkCardBackgroundAlt
+              : Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.2),
+              blurRadius: 30,
+              offset: const Offset(0, 10),
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Icon
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFEF4444),
+                    Color(0xFFDC2626),
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFEF4444).withOpacity(0.4),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                LucideIcons.powerOff,
+                color: Colors.white,
+                size: 40,
+              ),
+            )
+                .animate()
+                .scale(duration: AppConstants.durationNormal.ms)
+                .fadeIn(duration: AppConstants.durationNormal.ms),
+
+            const SizedBox(height: AppConstants.spacing2Xl),
+
+            // Title
+            Text(
+              'Disconnect Device?',
+              style: TextStyle(
+                fontSize: AppConstants.fontSizeTitle,
+                fontWeight: FontWeight.w700,
+                color: isDarkMode
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+              textAlign: TextAlign.center,
+            )
+                .animate()
+                .fadeIn(duration: AppConstants.durationNormal.ms, delay: 100.ms)
+                .slideY(begin: -0.2, duration: AppConstants.durationNormal.ms),
+
+            const SizedBox(height: AppConstants.spacingSm),
+
+            // Description
+            Text(
+              'Are you sure you want to disconnect from My Purifier?',
+              style: TextStyle(
+                fontSize: AppConstants.fontSizeBody,
+                color: isDarkMode
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
+              textAlign: TextAlign.center,
+            )
+                .animate()
+                .fadeIn(duration: AppConstants.durationNormal.ms, delay: 150.ms)
+                .slideY(begin: -0.2, duration: AppConstants.durationNormal.ms),
+
+            const SizedBox(height: AppConstants.spacing2Xl),
+
+            // Buttons
+            Row(
+              children: [
+                // Cancel Button
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppConstants.radiusMd,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(AppConstants.radiusMd),
+                        color: isDarkMode
+                            ? AppColors.darkCardBackground
+                            : AppColors.lightGray200,
+                      ),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontSize: AppConstants.fontSizeBody,
+                          fontWeight: FontWeight.w600,
+                          color: isDarkMode
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                )
+                    .animate()
+                    .fadeIn(duration: AppConstants.durationNormal.ms, delay: 200.ms)
+                    .slideX(begin: -0.3, duration: AppConstants.durationNormal.ms),
+
+                const SizedBox(width: AppConstants.spacingLg),
+
+                // Disconnect Button
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Dialog'u kapat
+                      Navigator.of(context).pop();
+                      // Kontrol ekranını kapat
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppConstants.radiusMd,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(AppConstants.radiusMd),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFFEF4444),
+                            Color(0xFFDC2626),
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFEF4444).withOpacity(0.4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Text(
+                        'Disconnect',
+                        style: TextStyle(
+                          fontSize: AppConstants.fontSizeBody,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                )
+                    .animate()
+                    .fadeIn(duration: AppConstants.durationNormal.ms, delay: 250.ms)
+                    .slideX(begin: 0.3, duration: AppConstants.durationNormal.ms),
+              ],
+            ),
+          ],
+        ),
+      )
+          .animate()
+          .fadeIn(duration: AppConstants.durationNormal.ms)
+          .scale(begin: const Offset(0.8, 0.8), duration: AppConstants.durationNormal.ms),
+    );
   }
 }
