@@ -291,7 +291,7 @@ class _HeaderBar extends StatelessWidget {
       children: [
         // Title
         Text(
-          'My Purifier',
+          'EVISTAL\'s Humidifier',
           style: TextStyle(
             fontSize: AppConstants.fontSizeTitle,
             fontWeight: FontWeight.w600,
@@ -1465,7 +1465,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                 _buildInfoItem(
                   icon: LucideIcons.type,
                   label: 'NAME',
-                  value: 'My Purifier',
+                  value: 'EVISTAL\'s Humidifier',
                   color: const Color(0xFF8B5CF6),
                   isDarkMode: isDarkMode,
                   delay: 400,
@@ -1685,7 +1685,7 @@ class _DisconnectDialog extends StatelessWidget {
 
             // Description
             Text(
-              'Are you sure you want to disconnect from My Purifier?',
+              'Are you sure you want to disconnect from EVISTAL\'s Humidifier?',
               style: TextStyle(
                 fontSize: AppConstants.fontSizeBody,
                 color: isDarkMode

@@ -53,7 +53,7 @@ class DeviceSelectionScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Hey, Eylül',
+                                  'Hey, EVISTAL\'s USER',
                                   style: TextStyle(
                                     fontSize: AppConstants.fontSizeBody,
                                     color: isDarkMode
@@ -178,7 +178,7 @@ class DeviceSelectionScreen extends StatelessWidget {
                               device: device,
                               index: index,
                               onTap: () async {
-                                // Eğer My Purifier'a tıklanırsa BLE tarama ekranını aç
+                                // Eğer EVISTAL's Humidifier'a tıklanırsa BLE tarama ekranını aç
                                 if (device.id == '1') {
                                   // BLE Tarama ekranını aç
                                   Navigator.of(context).push(

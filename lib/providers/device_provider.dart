@@ -42,18 +42,10 @@ class DeviceProvider with ChangeNotifier {
       // ========== HUMIDIFIERS ==========
       DeviceModel(
         id: '1',
-        name: 'My Purifier',
+        name: 'EVISTAL\'s Humidifier',
         type: DeviceType.purifier,
         icon: LucideIcons.house,
         isActive: true,
-        category: 'Humidifiers',
-      ),
-      DeviceModel(
-        id: '2',
-        name: 'Living Room Humidifier',
-        type: DeviceType.purifier,
-        icon: LucideIcons.wind,
-        isActive: false,
         category: 'Humidifiers',
       ),
       DeviceModel(
