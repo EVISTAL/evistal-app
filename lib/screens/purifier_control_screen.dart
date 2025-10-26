@@ -38,6 +38,15 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
     super.dispose();
   }
 
+  void _showDeviceInfo(BuildContext context, bool isDarkMode) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => _DeviceInfoPanel(isDarkMode: isDarkMode),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
@@ -172,19 +181,14 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                   // Mode Buttons Grid (Secondary Controls)
                   Row(
                     children: [
-                      // Auto Mode
+                      // Device Info
                       Expanded(
                         child: ControlCard(
-                          onTap: () => deviceProvider.toggleAutoMode(),
-                          isActive: purifierState.autoMode,
-                          activeBackgroundColor: isDarkMode
-                              ? AppColors.autoModeBgDark
-                              : AppColors.autoModeBgLight,
-                          activeShadowColor: AppColors.rgbMode1Light,
+                          onTap: () => _showDeviceInfo(context, isDarkMode),
                           child: ControlCardContent(
-                            icon: LucideIcons.zap,
-                            value: purifierState.autoMode ? 'ON' : 'OFF',
-                            label: 'Auto mode',
+                            icon: LucideIcons.info,
+                            value: 'v2.1',
+                            label: 'Info',
                             isDarkMode: isDarkMode,
                           ),
                         ),
@@ -1349,3 +1353,289 @@ class _DoublePyramidPainter extends CustomPainter {
   bool shouldRepaint(_DoublePyramidPainter oldDelegate) => false;
 }
 
+/// Device Info Panel - Cihaz bilgilerini gösteren estetik panel
+class _DeviceInfoPanel extends StatelessWidget {
+  final bool isDarkMode;
+
+  const _DeviceInfoPanel({required this.isDarkMode});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(AppConstants.radiusXl),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppConstants.radiusXl * 1.5),
+        color: isDarkMode
+            ? AppColors.darkCardBackgroundAlt
+            : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.2),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
+            spreadRadius: 5,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.all(AppConstants.spacing2Xl),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppConstants.radiusXl * 1.5),
+                topRight: Radius.circular(AppConstants.radiusXl * 1.5),
+              ),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  const Color(0xFF3B82F6),
+                  const Color(0xFF1D4ED8),
+                ],
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withOpacity(0.2),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.5),
+                      width: 2,
+                    ),
+                  ),
+                  child: const Icon(
+                    LucideIcons.info,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                )
+                    .animate()
+                    .scale(duration: AppConstants.durationNormal.ms)
+                    .fadeIn(duration: AppConstants.durationNormal.ms),
+                const SizedBox(width: AppConstants.radiusMd),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Device Information',
+                        style: TextStyle(
+                          fontSize: AppConstants.fontSizeTitle,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      )
+                          .animate()
+                          .fadeIn(duration: AppConstants.durationNormal.ms, delay: 100.ms)
+                          .slideX(begin: -0.2, duration: AppConstants.durationNormal.ms),
+                      const SizedBox(height: 4),
+                      Text(
+                        'EVISTAL Smart Humidifier',
+                        style: TextStyle(
+                          fontSize: AppConstants.fontSizeSubheadline,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      )
+                          .animate()
+                          .fadeIn(duration: AppConstants.durationNormal.ms, delay: 150.ms)
+                          .slideX(begin: -0.2, duration: AppConstants.durationNormal.ms),
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withOpacity(0.2),
+                    ),
+                    child: const Icon(
+                      LucideIcons.x,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                )
+                    .animate()
+                    .fadeIn(duration: AppConstants.durationNormal.ms)
+                    .scale(begin: const Offset(0.8, 0.8)),
+              ],
+            ),
+          ),
+
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(AppConstants.spacing2Xl),
+            child: Column(
+              children: [
+                // VERSION
+                _buildInfoItem(
+                  icon: LucideIcons.tag,
+                  label: 'VERSION',
+                  value: 'v2.1.0',
+                  color: const Color(0xFF10B981),
+                  isDarkMode: isDarkMode,
+                  delay: 200,
+                ),
+                const SizedBox(height: AppConstants.radiusMd),
+
+                // ID
+                _buildInfoItem(
+                  icon: LucideIcons.hash,
+                  label: 'ID',
+                  value: 'EV-2024-A1F2B3',
+                  color: const Color(0xFF3B82F6),
+                  isDarkMode: isDarkMode,
+                  delay: 300,
+                ),
+                const SizedBox(height: AppConstants.radiusMd),
+
+                // NAME
+                _buildInfoItem(
+                  icon: LucideIcons.type,
+                  label: 'NAME',
+                  value: 'My Purifier',
+                  color: const Color(0xFF8B5CF6),
+                  isDarkMode: isDarkMode,
+                  delay: 400,
+                ),
+              ],
+            ),
+          ),
+
+          // Footer
+          Container(
+            padding: const EdgeInsets.all(AppConstants.radiusMd),
+            child: Text(
+              'Powered by EVISTAL Technology',
+              style: TextStyle(
+                fontSize: AppConstants.fontSizeCaption,
+                color: isDarkMode
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          )
+              .animate()
+              .fadeIn(duration: AppConstants.durationNormal.ms, delay: 500.ms),
+        ],
+      ),
+    )
+        .animate()
+        .fadeIn(duration: AppConstants.durationNormal.ms)
+        .slideY(begin: 0.3, duration: AppConstants.durationNormal.ms, curve: Curves.easeOut);
+  }
+
+  Widget _buildInfoItem({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+    required bool isDarkMode,
+    required int delay,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(AppConstants.radiusMd),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppConstants.radiusMd),
+        color: isDarkMode
+            ? AppColors.darkCardBackground
+            : AppColors.lightGray100,
+        border: Border.all(
+          color: color.withOpacity(0.3),
+          width: 1.5,
+        ),
+      ),
+      child: Row(
+        children: [
+          // İkon
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  color.withOpacity(0.8),
+                  color,
+                ],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: AppConstants.radiusMd),
+
+          // Label ve Value
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: AppConstants.fontSizeCaption,
+                    fontWeight: FontWeight.w600,
+                    color: color,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: AppConstants.fontSizeBody,
+                    fontWeight: FontWeight.w700,
+                    color: isDarkMode
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Copy Icon
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withOpacity(0.1),
+            ),
+            child: Icon(
+              LucideIcons.copy,
+              color: color,
+              size: 18,
+            ),
+          ),
+        ],
+      ),
+    )
+        .animate()
+        .fadeIn(duration: AppConstants.durationNormal.ms, delay: delay.ms)
+        .slideX(begin: 0.3, duration: AppConstants.durationNormal.ms);
+  }
+}
