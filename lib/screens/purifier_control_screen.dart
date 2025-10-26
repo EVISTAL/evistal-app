@@ -115,14 +115,51 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                       ),
                       const SizedBox(width: AppConstants.spacingLg),
 
-                      // Timer Control
+                      // RGB Mode Control
                       Expanded(
                         child: ControlCard(
-                          onTap: () {},
+                          onTap: () => deviceProvider.cycleRgbMode(),
+                          isActive: true,
+                          activeBackgroundColor: AppColors.getRgbLightColor(purifierState.rgbMode).withOpacity(0.15),
+                          activeShadowColor: AppColors.getRgbLightColor(purifierState.rgbMode),
                           child: ControlCardContent(
-                            icon: LucideIcons.clock,
-                            value: purifierState.timer,
-                            label: 'Timer',
+                            customIcon: SizedBox(
+                              width: AppConstants.iconSizeLarge,
+                              height: AppConstants.iconSizeLarge,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: AppColors.getRgbGradient(purifierState.rgbMode),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.getRgbLightColor(purifierState.rgbMode).withOpacity(0.4),
+                                      blurRadius: 8,
+                                      spreadRadius: 1,
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    purifierState.rgbMode.toString(),
+                                    style: TextStyle(
+                                      fontSize: AppConstants.fontSizeBody,
+                                      fontWeight: FontWeight.w700,
+                                      color: purifierState.rgbMode == 3 ? Colors.black87 : Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              )
+                                  .animate(
+                                    key: ValueKey(purifierState.rgbMode),
+                                  )
+                                  .scale(
+                                    duration: AppConstants.durationNormal.ms,
+                                    begin: const Offset(0.8, 0.8),
+                                    curve: Curves.elasticOut,
+                                  ),
+                            ),
+                            value: purifierState.rgbMode.toString(),
+                            label: 'RGB Light',
                             isDarkMode: isDarkMode,
                           ),
                         ),
@@ -145,7 +182,8 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                               : AppColors.autoModeBgLight,
                           activeShadowColor: AppColors.rgbMode1Light,
                           child: ControlCardContent(
-                            value: 'AUTO',
+                            icon: LucideIcons.zap,
+                            value: purifierState.autoMode ? 'ON' : 'OFF',
                             label: 'Auto mode',
                             isDarkMode: isDarkMode,
                           ),
@@ -153,17 +191,18 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                       ),
                       const SizedBox(width: AppConstants.spacingLg),
 
-                      // Night Mode
+                      // Night Mode (Dark/Light Theme Toggle)
                       Expanded(
                         child: ControlCard(
-                          onTap: () => deviceProvider.toggleNightMode(),
-                          isActive: purifierState.nightMode,
+                          onTap: () => context.read<ThemeProvider>().toggleTheme(),
+                          isActive: isDarkMode,
                           activeBackgroundColor: isDarkMode
                               ? AppColors.nightModeBgDark
                               : AppColors.nightModeBgLight,
                           activeShadowColor: const Color(0xFF6366F1),
                           child: ControlCardContent(
-                            icon: LucideIcons.moon,
+                            icon: isDarkMode ? LucideIcons.moon : LucideIcons.sun,
+                            value: isDarkMode ? 'ON' : 'OFF',
                             label: 'Night mode',
                             isDarkMode: isDarkMode,
                           ),
@@ -182,6 +221,7 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                           activeShadowColor: const Color(0xFF3B82F6),
                           child: ControlCardContent(
                             icon: LucideIcons.wind,
+                            value: purifierState.airFlow ? 'ON' : 'OFF',
                             label: 'Air flow',
                             isDarkMode: isDarkMode,
                           ),
@@ -207,9 +247,6 @@ class _HeaderBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceProvider = context.watch<DeviceProvider>();
-    final rgbMode = deviceProvider.purifierState.rgbMode;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -229,63 +266,26 @@ class _HeaderBar extends StatelessWidget {
             .scale(begin: const Offset(0.8, 0.8)),
 
         // Title
-        Text(
-          'My Purifier',
-          style: TextStyle(
-            fontSize: AppConstants.fontSizeTitle,
-            fontWeight: FontWeight.w500,
-            color: isDarkMode
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+        Expanded(
+          child: Center(
+            child: Text(
+              'My Purifier',
+              style: TextStyle(
+                fontSize: AppConstants.fontSizeTitle,
+                fontWeight: FontWeight.w500,
+                color: isDarkMode
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+            )
+                .animate()
+                .fadeIn(duration: AppConstants.durationNormal.ms)
+                .slideY(begin: -0.3, duration: AppConstants.durationNormal.ms),
           ),
-        )
-            .animate()
-            .fadeIn(duration: AppConstants.durationNormal.ms)
-            .slideY(begin: -0.3, duration: AppConstants.durationNormal.ms),
+        ),
 
-        // RGB Mode Button
-        GestureDetector(
-          onTap: () => deviceProvider.cycleRgbMode(),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: AppConstants.durationNormal),
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: AppColors.getRgbGradient(rgbMode),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.getRgbLightColor(rgbMode).withOpacity(
-                    rgbMode == 0 ? 0.5 : 0.7,
-                  ),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                rgbMode.toString(),
-                style: TextStyle(
-                  fontSize: AppConstants.fontSizeCaption,
-                  color: rgbMode == 3 ? Colors.black87 : Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              )
-                  .animate(
-                    key: ValueKey(rgbMode),
-                  )
-                  .scale(
-                    duration: AppConstants.durationNormal.ms,
-                    begin: const Offset(0, 0),
-                    curve: Curves.elasticOut,
-                  ),
-            ),
-          ),
-        )
-            .animate()
-            .fadeIn(duration: AppConstants.durationNormal.ms)
-            .scale(begin: const Offset(0.8, 0.8)),
+        // Boş alan (sağ tarafta simetri için)
+        const SizedBox(width: AppConstants.iconSizeMedium),
       ],
     );
   }
