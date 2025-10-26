@@ -181,9 +181,15 @@ class DeviceSelectionScreen extends StatelessWidget {
                             return DeviceCard(
                               device: device,
                               index: index,
-                              onTap: () {
-                                // Eğer My Purifier'a tıklanırsa kontrol ekranını aç
+                              onTap: () async {
+                                // Eğer My Purifier'a tıklanırsa önce cihazı aç, sonra kontrol ekranını aç
                                 if (device.id == '1') {
+                                  // Cihaz kapalıysa aç
+                                  if (!deviceProvider.purifierState.isOn) {
+                                    await deviceProvider.togglePurifierPower();
+                                  }
+                                  
+                                  // Kontrol ekranını aç
                                   Navigator.of(context).push(
                                     PageRouteBuilder(
                                       pageBuilder: (context, animation, secondaryAnimation) =>

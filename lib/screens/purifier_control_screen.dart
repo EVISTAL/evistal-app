@@ -11,8 +11,32 @@ import '../utils/constants.dart';
 
 /// Hava Temizleyici Kontrol Ekranı
 /// My Purifier cihazının detaylı kontrol ekranı
-class PurifierControlScreen extends StatelessWidget {
+class PurifierControlScreen extends StatefulWidget {
   const PurifierControlScreen({super.key});
+
+  @override
+  State<PurifierControlScreen> createState() => _PurifierControlScreenState();
+}
+
+class _PurifierControlScreenState extends State<PurifierControlScreen> {
+  final ScrollController _scrollController = ScrollController();
+  double _scrollOffset = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      setState(() {
+        _scrollOffset = _scrollController.offset;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +55,7 @@ class PurifierControlScreen extends StatelessWidget {
               maxWidth: AppConstants.maxWidth,
             ),
             child: SingleChildScrollView(
+              controller: _scrollController,
               padding: const EdgeInsets.fromLTRB(
                 AppConstants.radiusXl,
                 AppConstants.radiusXl,
@@ -50,21 +75,13 @@ class PurifierControlScreen extends StatelessWidget {
 
                   const SizedBox(height: AppConstants.spacing2Xl),
 
-                  // Purifier Device Visualization
+                  // Purifier Device Visualization (Parallax ile)
                   _PurifierVisualization(
                     isDarkMode: isDarkMode,
                     rgbMode: purifierState.rgbMode,
                     isOn: purifierState.isOn,
                     fanSpeed: purifierState.fanSpeed,
-                  ),
-
-                  const SizedBox(height: AppConstants.spacing2Xl),
-
-                  // Power Button
-                  _PowerButton(
-                    isDarkMode: isDarkMode,
-                    isOn: purifierState.isOn,
-                    onTap: () => deviceProvider.togglePurifierPower(),
+                    scrollOffset: _scrollOffset,
                   ),
 
                   const SizedBox(height: AppConstants.spacing2Xl),
@@ -358,42 +375,416 @@ class _PurifierVisualization extends StatelessWidget {
   final int rgbMode;
   final bool isOn;
   final int fanSpeed;
+  final double scrollOffset;
 
   const _PurifierVisualization({
     required this.isDarkMode,
     required this.rgbMode,
     required this.isOn,
     required this.fanSpeed,
+    required this.scrollOffset,
   });
+
+  /// Duman/Buhar efektleri oluştur - Serbest yayılan duman
+  List<Widget> _buildSmokeEffects(int rgbMode) {
+    final smokeColor = AppColors.getRgbLightColor(rgbMode);
+    
+    return [
+      // Duman Bulutu 1 (Sola yayılan)
+      Positioned(
+        top: 60,
+        left: 40,
+        child: Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                smokeColor.withOpacity(0.25),
+                smokeColor.withOpacity(0.15),
+                smokeColor.withOpacity(0.08),
+                smokeColor.withOpacity(0.03),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
+            ),
+          ),
+        )
+            .animate(
+              onPlay: (controller) => controller.repeat(),
+            )
+            .moveY(
+              duration: 4500.ms,
+              begin: 0,
+              end: -140,
+              curve: Curves.easeOut,
+            )
+            .moveX(
+              duration: 4500.ms,
+              begin: 0,
+              end: -80,
+              curve: Curves.easeInOut,
+            )
+            .fadeOut(
+              duration: 4500.ms,
+              curve: Curves.easeOut,
+            )
+            .scale(
+              duration: 4500.ms,
+              begin: const Offset(0.5, 0.5),
+              end: const Offset(3.0, 3.5),
+              curve: Curves.easeOut,
+            ),
+      ),
+
+      // Duman Bulutu 2 (Sağa yayılan)
+      Positioned(
+        top: 60,
+        right: 40,
+        child: Container(
+          width: 110,
+          height: 110,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                smokeColor.withOpacity(0.22),
+                smokeColor.withOpacity(0.13),
+                smokeColor.withOpacity(0.07),
+                smokeColor.withOpacity(0.02),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
+            ),
+          ),
+        )
+            .animate(
+              onPlay: (controller) => controller.repeat(),
+            )
+            .moveY(
+              duration: 5000.ms,
+              begin: 0,
+              end: -150,
+              curve: Curves.easeOut,
+              delay: 1000.ms,
+            )
+            .moveX(
+              duration: 5000.ms,
+              begin: 0,
+              end: 90,
+              curve: Curves.easeInOut,
+              delay: 1000.ms,
+            )
+            .fadeOut(
+              duration: 5000.ms,
+              curve: Curves.easeOut,
+              delay: 1000.ms,
+            )
+            .scale(
+              duration: 5000.ms,
+              begin: const Offset(0.5, 0.5),
+              end: const Offset(3.2, 3.8),
+              curve: Curves.easeOut,
+              delay: 1000.ms,
+            ),
+      ),
+
+      // Duman Bulutu 3 (Merkez - Yukarı)
+      Positioned(
+        top: 30,
+        child: Container(
+          width: 140,
+          height: 140,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                smokeColor.withOpacity(0.28),
+                smokeColor.withOpacity(0.16),
+                smokeColor.withOpacity(0.09),
+                smokeColor.withOpacity(0.04),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
+            ),
+          ),
+        )
+            .animate(
+              onPlay: (controller) => controller.repeat(),
+            )
+            .moveY(
+              duration: 5500.ms,
+              begin: 0,
+              end: -180,
+              curve: Curves.easeOut,
+              delay: 2000.ms,
+            )
+            .moveX(
+              duration: 5500.ms,
+              begin: 0,
+              end: 15,
+              curve: Curves.easeInOut,
+              delay: 2000.ms,
+            )
+            .fadeOut(
+              duration: 5500.ms,
+              curve: Curves.easeOut,
+              delay: 2000.ms,
+            )
+            .scale(
+              duration: 5500.ms,
+              begin: const Offset(0.6, 0.6),
+              end: const Offset(3.5, 4.0),
+              curve: Curves.easeOut,
+              delay: 2000.ms,
+            ),
+      ),
+
+      // Duman Bulutu 4 (Sol üst diyagonal)
+      Positioned(
+        top: 80,
+        left: 30,
+        child: Container(
+          width: 95,
+          height: 95,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                smokeColor.withOpacity(0.2),
+                smokeColor.withOpacity(0.12),
+                smokeColor.withOpacity(0.06),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.4, 0.7, 1.0],
+            ),
+          ),
+        )
+            .animate(
+              onPlay: (controller) => controller.repeat(),
+            )
+            .moveY(
+              duration: 4000.ms,
+              begin: 0,
+              end: -120,
+              curve: Curves.easeOut,
+              delay: 500.ms,
+            )
+            .moveX(
+              duration: 4000.ms,
+              begin: 0,
+              end: -60,
+              curve: Curves.easeInOut,
+              delay: 500.ms,
+            )
+            .fadeOut(
+              duration: 4000.ms,
+              curve: Curves.easeOut,
+              delay: 500.ms,
+            )
+            .scale(
+              duration: 4000.ms,
+              begin: const Offset(0.5, 0.5),
+              end: const Offset(2.5, 2.8),
+              curve: Curves.easeOut,
+              delay: 500.ms,
+            ),
+      ),
+
+      // Duman Bulutu 5 (Sağ üst diyagonal)
+      Positioned(
+        top: 80,
+        right: 30,
+        child: Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                smokeColor.withOpacity(0.19),
+                smokeColor.withOpacity(0.11),
+                smokeColor.withOpacity(0.05),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.4, 0.7, 1.0],
+            ),
+          ),
+        )
+            .animate(
+              onPlay: (controller) => controller.repeat(),
+            )
+            .moveY(
+              duration: 4500.ms,
+              begin: 0,
+              end: -130,
+              curve: Curves.easeOut,
+              delay: 1500.ms,
+            )
+            .moveX(
+              duration: 4500.ms,
+              begin: 0,
+              end: 70,
+              curve: Curves.easeInOut,
+              delay: 1500.ms,
+            )
+            .fadeOut(
+              duration: 4500.ms,
+              curve: Curves.easeOut,
+              delay: 1500.ms,
+            )
+            .scale(
+              duration: 4500.ms,
+              begin: const Offset(0.5, 0.5),
+              end: const Offset(2.7, 3.0),
+              curve: Curves.easeOut,
+              delay: 1500.ms,
+            ),
+      ),
+
+      // Duman Bulutu 6 (Merkez-sol alt)
+      Positioned(
+        top: 110,
+        left: 70,
+        child: Container(
+          width: 85,
+          height: 85,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                smokeColor.withOpacity(0.18),
+                smokeColor.withOpacity(0.10),
+                smokeColor.withOpacity(0.04),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.4, 0.7, 1.0],
+            ),
+          ),
+        )
+            .animate(
+              onPlay: (controller) => controller.repeat(),
+            )
+            .moveY(
+              duration: 3800.ms,
+              begin: 0,
+              end: -110,
+              curve: Curves.easeOut,
+              delay: 800.ms,
+            )
+            .moveX(
+              duration: 3800.ms,
+              begin: 0,
+              end: -50,
+              curve: Curves.easeInOut,
+              delay: 800.ms,
+            )
+            .fadeOut(
+              duration: 3800.ms,
+              curve: Curves.easeOut,
+              delay: 800.ms,
+            )
+            .scale(
+              duration: 3800.ms,
+              begin: const Offset(0.5, 0.5),
+              end: const Offset(2.3, 2.6),
+              curve: Curves.easeOut,
+              delay: 800.ms,
+            ),
+      ),
+
+      // Duman Bulutu 7 (Merkez-sağ alt)
+      Positioned(
+        top: 110,
+        right: 70,
+        child: Container(
+          width: 90,
+          height: 90,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                smokeColor.withOpacity(0.17),
+                smokeColor.withOpacity(0.09),
+                smokeColor.withOpacity(0.04),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.4, 0.7, 1.0],
+            ),
+          ),
+        )
+            .animate(
+              onPlay: (controller) => controller.repeat(),
+            )
+            .moveY(
+              duration: 4100.ms,
+              begin: 0,
+              end: -115,
+              curve: Curves.easeOut,
+              delay: 1800.ms,
+            )
+            .moveX(
+              duration: 4100.ms,
+              begin: 0,
+              end: 55,
+              curve: Curves.easeInOut,
+              delay: 1800.ms,
+            )
+            .fadeOut(
+              duration: 4100.ms,
+              curve: Curves.easeOut,
+              delay: 1800.ms,
+            )
+            .scale(
+              duration: 4100.ms,
+              begin: const Offset(0.5, 0.5),
+              end: const Offset(2.4, 2.7),
+              curve: Curves.easeOut,
+              delay: 1800.ms,
+            ),
+      ),
+    ];
+  }
+
+  /// Çift piramit oluştur (düz yüzeyler - yumuşak köşeler)
+  Widget _buildDoublePyramid(bool isDarkMode) {
+    return CustomPaint(
+      size: const Size(200, 200),
+      painter: _DoublePyramidPainter(
+        isDarkMode: isDarkMode,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 320,
+      height: 270,
       child: Stack(
+        clipBehavior: Clip.none, // Duman çerçeve dışına çıkabilir
         alignment: Alignment.center,
         children: [
-          // RGB Glow Effects
+          // RGB Glow Effects - Gerçekçi Yayılan Işık
           if (isOn) ...[
-            // Top Glow
+            // Ana Glow (Merkez - daha yoğun)
             Positioned(
-              top: 0,
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: AppConstants.durationSlow),
-                width: 256,
-                height: 256,
+              top: 40,
+              child: Container(
+                width: 280,
+                height: 280,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.6),
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.5),
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.3),
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.15),
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.05),
                       Colors.transparent,
                     ],
+                    stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
                   ),
-                ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 48, sigmaY: 48),
-                  child: Container(),
                 ),
               )
                   .animate(
@@ -401,227 +792,152 @@ class _PurifierVisualization extends StatelessWidget {
                   )
                   .scale(
                     duration: AppConstants.durationGlow.ms,
+                    begin: const Offset(1.0, 1.0),
+                    end: const Offset(1.15, 1.15),
+                    curve: Curves.easeInOut,
+                  )
+                  .then()
+                  .scale(
+                    duration: AppConstants.durationGlow.ms,
+                    begin: const Offset(1.15, 1.15),
+                    end: const Offset(1.0, 1.0),
+                    curve: Curves.easeInOut,
+                  )
+                  .custom(
+                    duration: AppConstants.durationBreathing.ms,
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: 0.7 + (value * 0.3),
+                        child: child,
+                      );
+                    },
+                  )
+                  .then()
+                  .custom(
+                    duration: AppConstants.durationBreathing.ms,
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: 1.0 - (value * 0.3),
+                        child: child,
+                      );
+                    },
+                  ),
+            ),
+
+            // Dış Glow (Daha geniş, daha hafif)
+            Positioned(
+              top: -20,
+              child: Container(
+                width: 340,
+                height: 340,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      Colors.transparent,
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.08),
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.04),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.4, 0.7, 1.0],
+                  ),
+                ),
+              )
+                  .animate(
+                    onPlay: (controller) => controller.repeat(),
+                  )
+                  .scale(
+                    duration: (AppConstants.durationGlow * 1.5).ms,
                     begin: const Offset(1.0, 1.0),
                     end: const Offset(1.2, 1.2),
                     curve: Curves.easeInOut,
                   )
                   .then()
                   .scale(
-                    duration: AppConstants.durationGlow.ms,
+                    duration: (AppConstants.durationGlow * 1.5).ms,
                     begin: const Offset(1.2, 1.2),
                     end: const Offset(1.0, 1.0),
                     curve: Curves.easeInOut,
                   ),
             ),
 
-            // Bottom Glow (Reflection)
+            // Alt Yansıma Glow
             Positioned(
-              bottom: 0,
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: AppConstants.durationSlow),
-                width: 192,
-                height: 128,
+              bottom: -30,
+              child: Container(
+                width: 240,
+                height: 160,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.4),
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.3),
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.15),
+                      AppColors.getRgbLightColor(rgbMode).withOpacity(0.05),
                       Colors.transparent,
                     ],
+                    stops: const [0.0, 0.4, 0.7, 1.0],
                   ),
-                ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 32, sigmaY: 32),
-                  child: Container(),
                 ),
               )
                   .animate(
                     onPlay: (controller) => controller.repeat(),
                   )
                   .scale(
-                    duration: AppConstants.durationGlow.ms,
+                    duration: (AppConstants.durationGlow * 1.2).ms,
                     begin: const Offset(1.0, 1.0),
-                    end: const Offset(1.1, 1.1),
+                    end: const Offset(1.12, 1.12),
                     curve: Curves.easeInOut,
                   )
-                  .then(delay: 500.ms)
+                  .then(delay: 400.ms)
                   .scale(
-                    duration: AppConstants.durationGlow.ms,
-                    begin: const Offset(1.1, 1.1),
+                    duration: (AppConstants.durationGlow * 1.2).ms,
+                    begin: const Offset(1.12, 1.12),
                     end: const Offset(1.0, 1.0),
                     curve: Curves.easeInOut,
                   ),
             ),
+
+            // Duman/Buhar Efekti (Üstten yükselen)
+            ..._buildSmokeEffects(rgbMode),
           ],
 
-          // Device Structure
+          // Device Structure - Double Pyramid Humidifier (Floating)
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Main Cylinder
-              Container(
-                width: 128,
-                height: 192,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: isDarkMode
-                        ? [AppColors.darkCardBackground, AppColors.darkCardBackgroundAlt]
-                        : [AppColors.lightGray200, AppColors.lightGray300],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.15),
-                      blurRadius: AppConstants.shadowBlurXL,
-                      offset: const Offset(0, 20),
-                    ),
-                    BoxShadow(
-                      color: Colors.white.withOpacity(isDarkMode ? 0.1 : 0.8),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                      spreadRadius: 0,
-                      blurStyle: BlurStyle.inner,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Inner Grille
-                      Container(
-                        width: 112,
-                        height: 176,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: isDarkMode
-                                ? [
-                                    AppColors.darkGray700,
-                                    AppColors.darkGray600,
-                                    AppColors.darkGray700,
-                                  ]
-                                : [
-                                    AppColors.lightGray300,
-                                    AppColors.lightGray200,
-                                    AppColors.lightGray300,
-                                  ],
-                          ),
+              SizedBox(
+                height: 220,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Çift Piramit - Floating Animasyonlu (yukarı/aşağı)
+                    _buildDoublePyramid(isDarkMode)
+                        .animate(
+                          onPlay: (controller) => controller.repeat(),
+                        )
+                        .moveY(
+                          duration: 3000.ms,
+                          begin: -8,
+                          end: 8,
+                          curve: Curves.easeInOut,
+                        )
+                        .then()
+                        .moveY(
+                          duration: 3000.ms,
+                          begin: 8,
+                          end: -8,
+                          curve: Curves.easeInOut,
                         ),
-                      ),
-
-                      // RGB Light Strip
-                      if (isOn)
-                        Positioned(
-                          top: 16,
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: AppConstants.durationSlow),
-                            width: 112,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: AppColors.getRgbLightColor(rgbMode).withOpacity(0.8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.getRgbLightColor(rgbMode).withOpacity(0.8),
-                                  blurRadius: 16,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                          )
-                              .animate(
-                                onPlay: (controller) => controller.repeat(),
-                              )
-                              .custom(
-                                duration: AppConstants.durationBreathing.ms,
-                                builder: (context, value, child) {
-                                  return Opacity(
-                                    opacity: 0.6 + (value * 0.4), // 0.6 to 1.0
-                                    child: child,
-                                  );
-                                },
-                              )
-                              .then()
-                              .custom(
-                                duration: AppConstants.durationBreathing.ms,
-                                builder: (context, value, child) {
-                                  return Opacity(
-                                    opacity: 1.0 - (value * 0.4), // 1.0 to 0.6
-                                    child: child,
-                                  );
-                                },
-                              ),
-                        ),
-
-                      // Fan Icon (when device is ON)
-                      if (isOn)
-                        Positioned(
-                          top: 128,
-                          child: Icon(
-                            LucideIcons.fan,
-                            size: AppConstants.iconSizeXXL,
-                            color: isDarkMode
-                                ? AppColors.lightGray500
-                                : AppColors.lightIconInactive,
-                          )
-                              .animate(
-                                onPlay: (controller) => controller.repeat(),
-                              )
-                              .rotate(
-                                duration: fanSpeed == 0
-                                    ? 0.ms
-                                    : (fanSpeed == 1 ? 2000.ms : 1000.ms),
-                                curve: Curves.linear,
-                              ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              // Base Top Section
-              Container(
-                width: 160,
-                height: 56,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(AppConstants.radiusXl),
-                    topRight: Radius.circular(AppConstants.radiusXl),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: isDarkMode
-                        ? [AppColors.darkGray700, AppColors.darkCardBackground]
-                        : [AppColors.lightGray300, AppColors.lightGray400],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.15),
-                      blurRadius: 30,
-                      offset: const Offset(0, 10),
-                    ),
-                    BoxShadow(
-                      color: Colors.white.withOpacity(isDarkMode ? 0.1 : 0.8),
-                      blurRadius: 5,
-                      offset: const Offset(0, 1),
-                      spreadRadius: 0,
-                      blurStyle: BlurStyle.inner,
-                    ),
                   ],
                 ),
               ),
 
-              // Base Bottom Section
+              const SizedBox(height: 16),
+
+              // Base
               Container(
-                width: 176,
+                width: 180,
                 height: 32,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppConstants.radiusFull),
@@ -655,74 +971,6 @@ class _PurifierVisualization extends StatelessWidget {
               .fadeIn(duration: AppConstants.durationNormal.ms, delay: 300.ms),
         ],
       ),
-    );
-  }
-}
-
-/// Power Button
-class _PowerButton extends StatelessWidget {
-  final bool isDarkMode;
-  final bool isOn;
-  final VoidCallback onTap;
-
-  const _PowerButton({
-    required this.isDarkMode,
-    required this.isOn,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: AppConstants.durationSlow),
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isDarkMode
-                  ? AppColors.darkCardBackgroundAlt
-                  : AppColors.lightGray100,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(isDarkMode ? 0.6 : 0.15),
-                  blurRadius: isOn
-                      ? AppConstants.shadowBlurLarge
-                      : AppConstants.shadowBlurSmall * 2,
-                  offset: Offset(0, isOn ? 10 : 5),
-                ),
-                BoxShadow(
-                  color: Colors.white.withOpacity(isDarkMode ? 0.05 : 0.9),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                  spreadRadius: 0,
-                  blurStyle: BlurStyle.inner,
-                ),
-              ],
-            ),
-            child: Icon(
-              LucideIcons.power,
-              size: AppConstants.iconSizeExtraLarge,
-              color: isDarkMode
-                  ? AppColors.darkTextSecondary.withOpacity(isOn ? 1.0 : 0.5)
-                  : AppColors.lightTextSecondary.withOpacity(isOn ? 1.0 : 0.5),
-            ),
-          ),
-        ),
-        const SizedBox(height: AppConstants.spacingSm),
-        Text(
-          isOn ? 'On/Off' : 'Off',
-          style: TextStyle(
-            fontSize: AppConstants.fontSizeSubheadline,
-            color: isDarkMode
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -776,5 +1024,254 @@ class _OscillationIcon extends StatelessWidget {
           curve: Curves.easeInOut,
         );
   }
+}
+
+/// Çift Piramit Painter (Kum Saati Şekli) - Estetik 3D Versiyonu
+class _DoublePyramidPainter extends CustomPainter {
+  final bool isDarkMode;
+
+  _DoublePyramidPainter({required this.isDarkMode});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centerX = size.width / 2;
+    final centerY = size.height / 2;
+
+    // ============================================================================
+    // ÜST PİRAMİT (Ters) - 3D Gradient ile + Yumuşak Köşeler
+    // ============================================================================
+    
+    final topPyramidPath = Path();
+    // Sol üst köşe (yuvarlatılmış)
+    topPyramidPath.moveTo(centerX - 75, 10);
+    topPyramidPath.quadraticBezierTo(centerX - 80, 10, centerX - 80, 15);
+    // Sol kenar
+    topPyramidPath.lineTo(centerX - 32, centerY - 5);
+    // Sol orta köşe (yuvarlatılmış)
+    topPyramidPath.quadraticBezierTo(centerX - 30, centerY, centerX - 28, centerY);
+    // Alt kenar
+    topPyramidPath.lineTo(centerX + 28, centerY);
+    // Sağ orta köşe (yuvarlatılmış)
+    topPyramidPath.quadraticBezierTo(centerX + 30, centerY, centerX + 32, centerY - 5);
+    // Sağ kenar
+    topPyramidPath.lineTo(centerX + 80, 15);
+    // Sağ üst köşe (yuvarlatılmış)
+    topPyramidPath.quadraticBezierTo(centerX + 80, 10, centerX + 75, 10);
+    // Üst kenar
+    topPyramidPath.lineTo(centerX - 75, 10);
+    topPyramidPath.close();
+
+    // 3D Gradient (Sol koyu → Sağ açık)
+    final topGradientPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: isDarkMode
+            ? [
+                AppColors.darkGray700,
+                AppColors.darkGray600,
+                AppColors.darkCardBackground,
+              ]
+            : [
+                AppColors.lightGray300,
+                AppColors.lightGray200,
+                const Color(0xFFF5F5F5),
+              ],
+      ).createShader(Rect.fromLTWH(centerX - 80, 10, 160, centerY - 10));
+
+    canvas.drawPath(topPyramidPath, topGradientPaint);
+
+    // Inner Shadow (iç gölge)
+    final topShadowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+    canvas.drawPath(topPyramidPath, topShadowPaint);
+
+    // Highlight (üstten ışık vurması)
+    final topHighlightPath = Path();
+    topHighlightPath.moveTo(centerX - 70, 15);
+    topHighlightPath.lineTo(centerX + 70, 15);
+    topHighlightPath.lineTo(centerX + 25, centerY - 5);
+    topHighlightPath.lineTo(centerX - 25, centerY - 5);
+    topHighlightPath.close();
+
+    final highlightPaint = Paint()
+      ..color = Colors.white.withOpacity(isDarkMode ? 0.08 : 0.4)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    canvas.drawPath(topHighlightPath, highlightPaint);
+
+    // Border (ince ve smooth)
+    final topBorderPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = isDarkMode 
+          ? AppColors.darkGray700.withOpacity(0.8)
+          : AppColors.lightGray400.withOpacity(0.6)
+      ..strokeWidth = 1.0;
+    canvas.drawPath(topPyramidPath, topBorderPaint);
+
+    // ============================================================================
+    // ALT PİRAMİT (Normal) - 3D Gradient ile + Yumuşak Köşeler
+    // ============================================================================
+    
+    final bottomPyramidPath = Path();
+    // Sol orta köşe (yuvarlatılmış)
+    bottomPyramidPath.moveTo(centerX - 28, centerY);
+    bottomPyramidPath.quadraticBezierTo(centerX - 30, centerY, centerX - 32, centerY + 5);
+    // Sol kenar
+    bottomPyramidPath.lineTo(centerX - 88, size.height - 15);
+    // Sol alt köşe (yuvarlatılmış)
+    bottomPyramidPath.quadraticBezierTo(centerX - 90, size.height - 10, centerX - 85, size.height - 10);
+    // Alt kenar
+    bottomPyramidPath.lineTo(centerX + 85, size.height - 10);
+    // Sağ alt köşe (yuvarlatılmış)
+    bottomPyramidPath.quadraticBezierTo(centerX + 90, size.height - 10, centerX + 88, size.height - 15);
+    // Sağ kenar
+    bottomPyramidPath.lineTo(centerX + 32, centerY + 5);
+    // Sağ orta köşe (yuvarlatılmış)
+    bottomPyramidPath.quadraticBezierTo(centerX + 30, centerY, centerX + 28, centerY);
+    // Orta kenar
+    bottomPyramidPath.lineTo(centerX - 28, centerY);
+    bottomPyramidPath.close();
+
+    // 3D Gradient (Sol koyu → Sağ açık)
+    final bottomGradientPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: isDarkMode
+            ? [
+                AppColors.darkGray700,
+                AppColors.darkGray600,
+                AppColors.darkCardBackground,
+              ]
+            : [
+                AppColors.lightGray400,
+                AppColors.lightGray300,
+                AppColors.lightGray200,
+              ],
+      ).createShader(Rect.fromLTWH(
+          centerX - 90, centerY, 180, size.height - centerY - 10));
+
+    canvas.drawPath(bottomPyramidPath, bottomGradientPaint);
+
+    // Inner Shadow (iç gölge)
+    final bottomShadowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = Colors.black.withOpacity(isDarkMode ? 0.4 : 0.15)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+    canvas.drawPath(bottomPyramidPath, bottomShadowPaint);
+
+    // Highlight (ortadan ışık vurması)
+    final bottomHighlightPath = Path();
+    bottomHighlightPath.moveTo(centerX - 25, centerY + 5);
+    bottomHighlightPath.lineTo(centerX + 25, centerY + 5);
+    bottomHighlightPath.lineTo(centerX + 80, size.height - 15);
+    bottomHighlightPath.lineTo(centerX - 80, size.height - 15);
+    bottomHighlightPath.close();
+
+    canvas.drawPath(bottomHighlightPath, highlightPaint);
+
+    // Border (ince ve smooth)
+    final bottomBorderPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = isDarkMode 
+          ? AppColors.darkGray700.withOpacity(0.8)
+          : AppColors.lightGray500.withOpacity(0.6)
+      ..strokeWidth = 1.0;
+    canvas.drawPath(bottomPyramidPath, bottomBorderPaint);
+
+    // ============================================================================
+    // ORTA ÇİZGİ (Birleşme noktası - vurgu)
+    // ============================================================================
+    
+    final centerLinePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = isDarkMode
+          ? AppColors.darkGray700.withOpacity(0.5)
+          : AppColors.lightGray500.withOpacity(0.4)
+      ..strokeWidth = 1.5;
+    
+    canvas.drawLine(
+      Offset(centerX - 30, centerY),
+      Offset(centerX + 30, centerY),
+      centerLinePaint,
+    );
+
+    // Orta highlight çizgisi (metalik görünüm)
+    final centerHighlightPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = Colors.white.withOpacity(isDarkMode ? 0.1 : 0.5)
+      ..strokeWidth = 0.5;
+    
+    canvas.drawLine(
+      Offset(centerX - 28, centerY - 1),
+      Offset(centerX + 28, centerY - 1),
+      centerHighlightPaint,
+    );
+
+    // ============================================================================
+    // KATMAN ÇİZGİLERİ (Yatay çizgilerle katman efekti)
+    // ============================================================================
+    
+    final layerLinePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = isDarkMode
+          ? AppColors.darkGray700.withOpacity(0.6)
+          : AppColors.lightGray400.withOpacity(0.5)
+      ..strokeWidth = 1.0;
+
+    final layerHighlightPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = Colors.white.withOpacity(isDarkMode ? 0.05 : 0.3)
+      ..strokeWidth = 0.5;
+
+    // ÜST PİRAMİT KATMANLARI (8 katman)
+    const int topLayers = 8;
+    for (int i = 1; i < topLayers; i++) {
+      final double y = 10 + (centerY - 10) * (i / topLayers);
+      final double widthAtY = 80 - (80 - 30) * (i / topLayers);
+      
+      // Ana katman çizgisi
+      canvas.drawLine(
+        Offset(centerX - widthAtY, y),
+        Offset(centerX + widthAtY, y),
+        layerLinePaint,
+      );
+      
+      // Highlight çizgisi (altında)
+      canvas.drawLine(
+        Offset(centerX - widthAtY + 2, y + 1),
+        Offset(centerX + widthAtY - 2, y + 1),
+        layerHighlightPaint,
+      );
+    }
+
+    // ALT PİRAMİT KATMANLARI (10 katman)
+    const int bottomLayers = 10;
+    for (int i = 1; i < bottomLayers; i++) {
+      final double y = centerY + (size.height - 10 - centerY) * (i / bottomLayers);
+      final double widthAtY = 30 + (90 - 30) * (i / bottomLayers);
+      
+      // Ana katman çizgisi
+      canvas.drawLine(
+        Offset(centerX - widthAtY, y),
+        Offset(centerX + widthAtY, y),
+        layerLinePaint,
+      );
+      
+      // Highlight çizgisi (altında)
+      canvas.drawLine(
+        Offset(centerX - widthAtY + 2, y + 1),
+        Offset(centerX + widthAtY - 2, y + 1),
+        layerHighlightPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DoublePyramidPainter oldDelegate) => false;
 }
 

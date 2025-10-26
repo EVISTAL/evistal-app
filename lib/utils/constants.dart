@@ -70,9 +70,9 @@ class AppConstants {
   // ============================================================================
   static const List<String> deviceCategories = [
     'All',
-    'Living',
-    'Bedroom',
-    'Outdoor',
+    'Humidifiers',
+    'Smart TV',
+    'Smart Lighting',
   ];
 
   // ============================================================================

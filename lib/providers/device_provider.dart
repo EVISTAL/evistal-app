@@ -39,45 +39,82 @@ class DeviceProvider with ChangeNotifier {
   /// Cihazları başlat
   void _initializeDevices() {
     _devices = [
+      // ========== HUMIDIFIERS ==========
       DeviceModel(
         id: '1',
         name: 'My Purifier',
         type: DeviceType.purifier,
         icon: LucideIcons.house,
         isActive: true,
-        category: 'Living',
+        category: 'Humidifiers',
       ),
       DeviceModel(
         id: '2',
-        name: 'Air Conditioner',
-        type: DeviceType.airConditioner,
-        icon: LucideIcons.house,
+        name: 'Living Room Humidifier',
+        type: DeviceType.purifier,
+        icon: LucideIcons.wind,
         isActive: false,
-        category: 'Living',
+        category: 'Humidifiers',
       ),
       DeviceModel(
         id: '3',
-        name: 'Smart TV',
+        name: 'Bedroom Humidifier',
+        type: DeviceType.purifier,
+        icon: LucideIcons.droplets,
+        isActive: false,
+        category: 'Humidifiers',
+      ),
+      
+      // ========== SMART TV ==========
+      DeviceModel(
+        id: '4',
+        name: 'Living Room TV',
         type: DeviceType.tv,
         icon: LucideIcons.tv,
         isActive: false,
-        category: 'Living',
-      ),
-      DeviceModel(
-        id: '4',
-        name: 'Smart Lighting',
-        type: DeviceType.lighting,
-        icon: LucideIcons.lightbulb,
-        isActive: false,
-        category: 'Bedroom',
+        category: 'Smart TV',
       ),
       DeviceModel(
         id: '5',
-        name: 'Speaker',
-        type: DeviceType.speaker,
-        icon: LucideIcons.speaker,
+        name: 'Bedroom TV',
+        type: DeviceType.tv,
+        icon: LucideIcons.monitor,
         isActive: false,
-        category: 'Living',
+        category: 'Smart TV',
+      ),
+      DeviceModel(
+        id: '6',
+        name: 'Kitchen TV',
+        type: DeviceType.tv,
+        icon: LucideIcons.tv,
+        isActive: false,
+        category: 'Smart TV',
+      ),
+      
+      // ========== SMART LIGHTING ==========
+      DeviceModel(
+        id: '7',
+        name: 'Living Room Light',
+        type: DeviceType.lighting,
+        icon: LucideIcons.lightbulb,
+        isActive: false,
+        category: 'Smart Lighting',
+      ),
+      DeviceModel(
+        id: '8',
+        name: 'Bedroom Light',
+        type: DeviceType.lighting,
+        icon: LucideIcons.lightbulb,
+        isActive: true,
+        category: 'Smart Lighting',
+      ),
+      DeviceModel(
+        id: '9',
+        name: 'Kitchen Light',
+        type: DeviceType.lighting,
+        icon: LucideIcons.lightbulb,
+        isActive: false,
+        category: 'Smart Lighting',
       ),
     ];
   }

@@ -112,7 +112,7 @@ class ControlCardContent extends StatelessWidget {
           Text(
             value!,
             style: TextStyle(
-              fontSize: AppConstants.iconSizeLarge,
+              fontSize: AppConstants.fontSizeBody,
               fontWeight: FontWeight.w600,
               color: isDarkMode
                   ? AppColors.darkTextPrimary

@@ -1,4 +1,4 @@
-package com.example.evistal_app
+package com.evistal.smarthome_v2
 
 import io.flutter.embedding.android.FlutterActivity
 
