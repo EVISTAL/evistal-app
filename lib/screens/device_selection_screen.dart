@@ -7,7 +7,6 @@ import '../providers/device_provider.dart';
 import '../widgets/weather_card.dart';
 import '../widgets/device_card.dart';
 import '../widgets/category_tabs.dart';
-import '../widgets/bottom_nav.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
 import 'purifier_control_screen.dart';
@@ -27,12 +26,8 @@ class DeviceSelectionScreen extends StatelessWidget {
       backgroundColor: isDarkMode
           ? AppColors.darkBackground
           : AppColors.lightBackground,
-      body: Stack(
-        children: [
-          // Ana içerik
-          SafeArea(
-            bottom: false,
-            child: Center(
+      body: SafeArea(
+        child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
                   maxWidth: AppConstants.maxWidth,
@@ -228,16 +223,6 @@ class DeviceSelectionScreen extends StatelessWidget {
               ),
             ),
           ),
-
-          // Bottom Navigation
-          const Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: BottomNav(currentIndex: 0),
-          ),
-        ],
-      ),
     );
   }
 }

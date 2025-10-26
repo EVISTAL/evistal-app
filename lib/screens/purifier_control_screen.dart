@@ -70,11 +70,6 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
 
                   const SizedBox(height: AppConstants.spacing2Xl),
 
-                  // Status Info Bar
-                  _StatusInfoBar(isDarkMode: isDarkMode),
-
-                  const SizedBox(height: AppConstants.spacing2Xl),
-
                   // Purifier Device Visualization (Parallax ile)
                   _PurifierVisualization(
                     isDarkMode: isDarkMode,
@@ -271,9 +266,9 @@ class _HeaderBar extends StatelessWidget {
             child: Center(
               child: Text(
                 rgbMode.toString(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: AppConstants.fontSizeCaption,
-                  color: Colors.white,
+                  color: rgbMode == 3 ? Colors.black87 : Colors.white,
                   fontWeight: FontWeight.w600,
                 ),
               )
@@ -293,79 +288,6 @@ class _HeaderBar extends StatelessWidget {
             .scale(begin: const Offset(0.8, 0.8)),
       ],
     );
-  }
-}
-
-/// Status Info Bar - Sıcaklık, Nem, Hava Kalitesi
-class _StatusInfoBar extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _StatusInfoBar({required this.isDarkMode});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('🌡️', style: TextStyle(fontSize: AppConstants.iconSizeLarge)),
-        const SizedBox(width: AppConstants.spacingXs),
-        Text(
-          '23°',
-          style: TextStyle(
-            fontSize: AppConstants.iconSizeLarge,
-            color: isDarkMode
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-          ),
-        ),
-        const SizedBox(width: AppConstants.radiusXl),
-        const Text('💧', style: TextStyle(fontSize: AppConstants.iconSizeLarge)),
-        const SizedBox(width: AppConstants.spacingXs),
-        Text(
-          '50%',
-          style: TextStyle(
-            fontSize: AppConstants.iconSizeLarge,
-            color: isDarkMode
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-          ),
-        ),
-        const SizedBox(width: AppConstants.radiusXl),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppConstants.spacingLg,
-            vertical: AppConstants.spacingSm,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-            color: isDarkMode
-                ? AppColors.darkCardBackground
-                : AppColors.lightGray100,
-            boxShadow: [
-              BoxShadow(
-                color: isDarkMode
-                    ? AppColors.darkCardBackgroundAlt.withOpacity(0.5)
-                    : AppColors.lightGray300.withOpacity(0.3),
-                blurRadius: isDarkMode ? 10 : 8,
-                offset: Offset(0, isDarkMode ? 4 : 2),
-              ),
-            ],
-          ),
-          child: Text(
-            'GOOD',
-            style: TextStyle(
-              fontSize: AppConstants.fontSizeSubheadline,
-              fontWeight: FontWeight.w600,
-              color: isDarkMode
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
-          ),
-        ),
-      ],
-    )
-        .animate()
-        .fadeIn(duration: AppConstants.durationNormal.ms, delay: 200.ms);
   }
 }
 
@@ -1036,7 +958,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
 
                   const SizedBox(height: 16),
 
-                  // Base
+                  // Base - RGB Mode'a Göre Parlayan Taban
                   Container(
                     width: 180,
                     height: 32,
@@ -1045,11 +967,23 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: widget.isDarkMode
-                            ? [AppColors.darkCardBackground, AppColors.darkCardBackgroundAlt]
-                            : [AppColors.lightGray400, AppColors.lightGray500],
+                        colors: widget.isOn
+                            ? [
+                                currentColor.withOpacity(0.4),
+                                currentColor.withOpacity(0.6),
+                              ]
+                            : (widget.isDarkMode
+                                ? [AppColors.darkCardBackground, AppColors.darkCardBackgroundAlt]
+                                : [AppColors.lightGray400, AppColors.lightGray500]),
                       ),
+                      border: widget.isOn
+                          ? Border.all(
+                              color: currentColor.withOpacity(0.6),
+                              width: 1.5,
+                            )
+                          : null,
                       boxShadow: [
+                        // Ana gölge
                         BoxShadow(
                           color: widget.isDarkMode
                               ? Colors.black.withOpacity(0.5)
@@ -1057,9 +991,46 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                           blurRadius: widget.isDarkMode ? 24 : 20,
                           offset: const Offset(0, 8),
                         ),
+                        // RGB Glow (aktif olduğunda)
+                        if (widget.isOn)
+                          BoxShadow(
+                            color: currentColor.withOpacity(0.6),
+                            blurRadius: 32,
+                            spreadRadius: 2,
+                            offset: const Offset(0, 4),
+                          ),
+                        if (widget.isOn)
+                          BoxShadow(
+                            color: currentColor.withOpacity(0.4),
+                            blurRadius: 48,
+                            spreadRadius: 4,
+                            offset: const Offset(0, 8),
+                          ),
                       ],
                     ),
-                  ),
+                  )
+                      .animate(
+                        onPlay: (controller) => widget.isOn ? controller.repeat() : null,
+                      )
+                      .custom(
+                        duration: 2000.ms,
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: widget.isOn ? 1.0 + (value * 0.03) : 1.0,
+                            child: child,
+                          );
+                        },
+                      )
+                      .then()
+                      .custom(
+                        duration: 2000.ms,
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: widget.isOn ? 1.03 - (value * 0.03) : 1.0,
+                            child: child,
+                          );
+                        },
+                      ),
                 ],
               )
                   .animate()
