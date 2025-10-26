@@ -10,6 +10,7 @@ import '../widgets/category_tabs.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
 import 'purifier_control_screen.dart';
+import 'ble_scan_screen.dart';
 
 /// Cihaz Seçim Ekranı
 /// Ana ekran - Cihazları listeler
@@ -177,18 +178,13 @@ class DeviceSelectionScreen extends StatelessWidget {
                               device: device,
                               index: index,
                               onTap: () async {
-                                // Eğer My Purifier'a tıklanırsa önce cihazı aç, sonra kontrol ekranını aç
+                                // Eğer My Purifier'a tıklanırsa BLE tarama ekranını aç
                                 if (device.id == '1') {
-                                  // Cihaz kapalıysa aç
-                                  if (!deviceProvider.purifierState.isOn) {
-                                    await deviceProvider.togglePurifierPower();
-                                  }
-                                  
-                                  // Kontrol ekranını aç
+                                  // BLE Tarama ekranını aç
                                   Navigator.of(context).push(
                                     PageRouteBuilder(
                                       pageBuilder: (context, animation, secondaryAnimation) =>
-                                          const PurifierControlScreen(),
+                                          const BLEScanScreen(),
                                       transitionsBuilder:
                                           (context, animation, secondaryAnimation, child) {
                                         const begin = Offset(1.0, 0.0);
