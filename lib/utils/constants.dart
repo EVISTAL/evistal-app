@@ -7,22 +7,22 @@ class AppConstants {
   // ============================================================================
   static const double spacingXs = 4.0;
   static const double spacingSm = 8.0;
-  static const double spacingMd = 12.0;
-  static const double spacingLg = 16.0;
-  static const double spacingXl = 24.0;
-  static const double spacing2Xl = 32.0;
-  static const double spacing3Xl = 48.0;
-  static const double spacing4Xl = 64.0;
+  static const double spacingMd = 14.0;
+  static const double spacingLg = 18.0;
+  static const double spacingXl = 28.0;
+  static const double spacing2Xl = 36.0;
+  static const double spacing3Xl = 52.0;
+  static const double spacing4Xl = 68.0;
 
   // ============================================================================
   // BORDER RADIUS
   // ============================================================================
-  static const double radiusSm = 8.0;
-  static const double radiusMd = 12.0;
-  static const double radiusLg = 16.0;
-  static const double radiusXl = 24.0;
-  static const double radius2Xl = 32.0;
-  static const double radius3Xl = 48.0;
+  static const double radiusSm = 10.0;
+  static const double radiusMd = 14.0;
+  static const double radiusLg = 18.0;
+  static const double radiusXl = 28.0;
+  static const double radius2Xl = 36.0;
+  static const double radius3Xl = 52.0;
   static const double radiusFull = 9999.0;
 
   // ============================================================================
@@ -46,13 +46,14 @@ class AppConstants {
   // ============================================================================
   // ANIMATION DURATIONS (milliseconds)
   // ============================================================================
-  static const int durationFast = 200;
-  static const int durationNormal = 300;
-  static const int durationSlow = 500;
-  static const int durationThemeSwitch = 700;
+  static const int durationFast = 180;
+  static const int durationNormal = 250;
+  static const int durationSlow = 450;
+  static const int durationThemeSwitch = 650;
   static const int durationBreathing = 2000;
   static const int durationToggle = 1500;
   static const int durationGlow = 3000;
+  static const int durationStagger = 80; // Kart animasyonları için stagger delay
 
   // ============================================================================
   // SIZES
@@ -60,10 +61,11 @@ class AppConstants {
   static const double maxWidth = 448.0; // Max content width
   static const double bottomNavHeight = 64.0;
   static const double iconSizeSmall = 20.0;
-  static const double iconSizeMedium = 24.0;
-  static const double iconSizeLarge = 32.0;
-  static const double iconSizeExtraLarge = 40.0;
-  static const double iconSizeXXL = 48.0;
+  static const double iconSizeMedium = 28.0; // 24 → 28
+  static const double iconSizeLarge = 34.0; // 32 → 34
+  static const double iconSizeExtraLarge = 42.0; // 40 → 42
+  static const double iconSizeXXL = 52.0; // 48 → 52
+  static const double categoryTabHeight = 44.0; // Category tab yüksekliği
 
   // ============================================================================
   // DEVICE CATEGORIES
@@ -98,10 +100,10 @@ class AppConstants {
   // ============================================================================
   // SHADOW BLUR RADII
   // ============================================================================
-  static const double shadowBlurSmall = 10.0;
-  static const double shadowBlurMedium = 24.0;
-  static const double shadowBlurLarge = 40.0;
-  static const double shadowBlurXL = 60.0;
+  static const double shadowBlurSmall = 8.0; // Daha soft
+  static const double shadowBlurMedium = 20.0; // Daha soft
+  static const double shadowBlurLarge = 36.0; // Daha soft
+  static const double shadowBlurXL = 50.0; // Daha soft
 
   // ============================================================================
   // OPACITY VALUES
@@ -110,6 +112,14 @@ class AppConstants {
   static const double opacityMedium = 0.5;
   static const double opacityLow = 0.3;
   static const double opacityVeryLow = 0.1;
+  
+  // ============================================================================
+  // SHADOW OPACITY VALUES (Daha soft gölgeler için)
+  // ============================================================================
+  static const double shadowOpacityLight = 0.08; // Light mode için
+  static const double shadowOpacityMedium = 0.15; // Light mode için
+  static const double shadowOpacityDark = 0.2; // Dark mode için
+  static const double shadowOpacityDarkStrong = 0.3; // Dark mode için
 }
 
 

@@ -217,8 +217,10 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   'BLE Device Scan',
                   style: TextStyle(
                     fontSize: AppConstants.fontSizeTitle,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     color: colors.textPrimary,
+                    height: 1.3,
+                    letterSpacing: 0.2,
                   ),
                 )
                     .animate()
@@ -247,19 +249,22 @@ class _BLEScanScreenState extends State<BLEScanScreen>
             height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: colors.primaryGradient,
+              gradient: colors.activeGradient, // Monochrome gradient
               boxShadow: [
                 BoxShadow(
-                  color: colors.primary.withOpacity(0.4),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
+                  color: isDarkMode
+                      ? Colors.white.withOpacity(AppConstants.shadowOpacityDark)
+                      : colors.gray500.withOpacity(AppConstants.shadowOpacityLight),
+                  blurRadius: AppConstants.shadowBlurSmall,
+                  offset: const Offset(0, 3),
+                  spreadRadius: 0,
                 ),
               ],
             ),
             child: Icon(
               LucideIcons.bluetooth,
               size: AppConstants.iconSizeMedium,
-              color: isDarkMode ? colors.textPrimary : Colors.white,
+              color: isDarkMode ? colors.cardBackgroundAlt : Colors.white,
             ),
           )
               .animate()
@@ -291,8 +296,8 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: colors.textPrimary
-                          .withOpacity(0.3 - (_scanController.value * 0.3)),
-                      width: 2,
+                          .withOpacity(0.15 - (_scanController.value * 0.15)), // Daha subtle (0.3 → 0.15)
+                      width: 1.5, // İnce çizgi
                     ),
                   ),
                 ),
@@ -306,8 +311,8 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: colors.textPrimary
-                          .withOpacity(0.5 - (_scanController.value * 0.5)),
-                      width: 2,
+                          .withOpacity(0.25 - (_scanController.value * 0.25)), // Daha subtle (0.5 → 0.25)
+                      width: 1.5, // İnce çizgi
                     ),
                   ),
                 ),
@@ -321,8 +326,8 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: colors.textPrimary
-                          .withOpacity(0.7 - (_scanController.value * 0.7)),
-                      width: 2,
+                          .withOpacity(0.35 - (_scanController.value * 0.35)), // Daha subtle (0.7 → 0.35)
+                      width: 1.5, // İnce çizgi
                     ),
                   ),
                 ),
@@ -333,18 +338,15 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                 height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      colors.textPrimary.withOpacity(0.3),
-                      colors.textPrimary.withOpacity(0.1),
-                      Colors.transparent,
-                    ],
-                  ),
+                  gradient: colors.activeGradient, // Monochrome gradient
                   boxShadow: [
                     BoxShadow(
-                      color: colors.textPrimary.withOpacity(0.3),
-                      blurRadius: 30,
-                      spreadRadius: 10,
+                      color: isDarkMode
+                          ? Colors.white.withOpacity(AppConstants.shadowOpacityDark)
+                          : colors.gray500.withOpacity(AppConstants.shadowOpacityMedium),
+                      blurRadius: AppConstants.shadowBlurMedium,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -352,7 +354,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   child: Icon(
                     _isScanning ? LucideIcons.radio : LucideIcons.check,
                     size: 48,
-                    color: isDarkMode ? Colors.white : colors.primary,
+                    color: isDarkMode ? colors.cardBackgroundAlt : Colors.white,
                   ),
                 ),
               )
@@ -463,10 +465,11 @@ class _BLEScanScreenState extends State<BLEScanScreen>
         boxShadow: [
           BoxShadow(
             color: isDarkMode
-                ? Colors.black.withOpacity(0.3)
-                : Colors.black.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 4),
+                ? Colors.black.withOpacity(AppConstants.shadowOpacityDark)
+                : Colors.black.withOpacity(AppConstants.shadowOpacityLight),
+            blurRadius: AppConstants.shadowBlurMedium,
+            offset: const Offset(0, 3),
+            spreadRadius: 0,
           ),
         ],
       ),
@@ -478,25 +481,21 @@ class _BLEScanScreenState extends State<BLEScanScreen>
             height: 56,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  colors.primary.withOpacity(0.8),
-                  colors.primaryAccent.withOpacity(0.8),
-                ],
-              ),
+              gradient: colors.activeGradient, // Monochrome gradient
               boxShadow: [
                 BoxShadow(
-                  color: colors.primary.withOpacity(0.3),
-                  blurRadius: 12,
-                  spreadRadius: 2,
+                  color: isDarkMode
+                      ? Colors.white.withOpacity(AppConstants.shadowOpacityDark)
+                      : colors.gray500.withOpacity(AppConstants.shadowOpacityLight),
+                  blurRadius: AppConstants.shadowBlurSmall,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: Icon(
               LucideIcons.bluetooth,
-              color: isDarkMode ? colors.textPrimary : Colors.white,
+              color: isDarkMode ? colors.cardBackgroundAlt : Colors.white,
               size: 28,
             ),
           )
@@ -583,12 +582,17 @@ class _BLEScanScreenState extends State<BLEScanScreen>
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppConstants.radiusMd),
-                gradient: colors.primaryGradient,
+                color: colors.cardBackground, // Gradient yerine solid color
+                border: Border.all(
+                  color: colors.textPrimary.withOpacity(0.2),
+                  width: 1,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: colors.primary.withOpacity(0.4),
-                    blurRadius: 8,
+                    color: Colors.black.withOpacity(isDarkMode ? AppConstants.shadowOpacityDark : AppConstants.shadowOpacityLight),
+                    blurRadius: AppConstants.shadowBlurSmall,
                     offset: const Offset(0, 2),
+                    spreadRadius: 0,
                   ),
                 ],
               ),
@@ -597,7 +601,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                 style: TextStyle(
                   fontSize: AppConstants.fontSizeSubheadline,
                   fontWeight: FontWeight.w600,
-                  color: isDarkMode ? colors.textPrimary : Colors.white,
+                  color: colors.textPrimary, // Monochrome
                 ),
               ),
             ),
@@ -645,8 +649,10 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                 _isScanning ? 'Scanning...' : 'Rescan Devices',
                 style: TextStyle(
                   fontSize: AppConstants.fontSizeBody,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: _isScanning ? colors.textSecondary : colors.textPrimary,
+                  height: 1.3,
+                  letterSpacing: 0.2,
                 ),
               ),
             ],
@@ -701,18 +707,21 @@ class _ConnectingDialog extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: colors.primaryGradient,
+                gradient: colors.activeGradient, // Monochrome gradient
                 boxShadow: [
                   BoxShadow(
-                    color: colors.primary.withOpacity(0.4),
-                    blurRadius: 20,
-                    spreadRadius: 5,
+                    color: isDarkMode
+                        ? Colors.white.withOpacity(AppConstants.shadowOpacityDark)
+                        : colors.gray500.withOpacity(AppConstants.shadowOpacityMedium),
+                    blurRadius: AppConstants.shadowBlurMedium,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: Icon(
                 LucideIcons.bluetooth,
-                color: isDarkMode ? colors.textPrimary : Colors.white,
+                color: isDarkMode ? colors.cardBackgroundAlt : Colors.white,
                 size: 40,
               ),
             )

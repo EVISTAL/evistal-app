@@ -172,6 +172,7 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                           child: Builder(
                             builder: (context) {
                               final colors = context.colors;
+                              final isDarkMode = Theme.of(context).brightness == Brightness.dark;
                               return ControlCardContent(
                                 customIcon: SizedBox(
                                   width: AppConstants.iconSizeLarge,
@@ -179,12 +180,17 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      gradient: colors.activeGradient,
+                                      color: colors.cardBackground, // Mat solid color
+                                      border: Border.all(
+                                        color: colors.textPrimary.withOpacity(0.2),
+                                        width: 1.5,
+                                      ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: colors.textPrimary.withOpacity(0.4),
-                                          blurRadius: 8,
-                                          spreadRadius: 1,
+                                          color: Colors.black.withOpacity(isDarkMode ? AppConstants.shadowOpacityDark : AppConstants.shadowOpacityLight),
+                                          blurRadius: AppConstants.shadowBlurSmall,
+                                          spreadRadius: 0,
+                                          offset: const Offset(0, 2),
                                         ),
                                       ],
                                     ),
@@ -194,7 +200,8 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                                         style: TextStyle(
                                           fontSize: AppConstants.fontSizeBody,
                                           fontWeight: FontWeight.w700,
-                                          color: colors.textPrimary,
+                                          color: colors.textPrimary, // Monochrome
+                                          height: 1.0,
                                         ),
                                       ),
                                     ),
@@ -208,8 +215,8 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                                         curve: Curves.elasticOut,
                                       ),
                                 ),
-                                value: 'Mode',
-                                label: 'RGB Light',
+                                value: null, // Value kaldırıldı - daha az yer kaplasın
+                                label: 'RGB',
                               );
                             },
                           ),
@@ -258,7 +265,7 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                           activeShadowColor: const Color(0xFFEF4444),
                           child: const ControlCardContent(
                             icon: LucideIcons.powerOff,
-                            value: 'BLE',
+                            value: null, // Value kaldırıldı - yazı daha yukarı çıksın
                             label: 'Disconnect',
                           ),
                         ),
@@ -435,9 +442,9 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
               ],
               stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
             ),
-          ),
-        )
-            .animate(
+                ),
+              )
+                  .animate(
               onPlay: (controller) => controller.repeat(),
             )
             .moveY(
@@ -455,8 +462,8 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
             .fadeOut(
               duration: 4500.ms,
               curve: Curves.easeOut,
-            )
-            .scale(
+                  )
+                  .scale(
               duration: 4500.ms,
               begin: const Offset(0.5, 0.5),
               end: const Offset(3.0, 3.5),
@@ -568,28 +575,28 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
       ),
 
       // Duman Bulutu 4 (Sol üst diyagonal)
-      Positioned(
+            Positioned(
         top: 80,
         left: 30,
         child: Container(
           width: 95,
           height: 95,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: RadialGradient(
-              colors: [
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
                 smokeColor.withOpacity(0.2),
                 smokeColor.withOpacity(0.12),
                 smokeColor.withOpacity(0.06),
-                Colors.transparent,
-              ],
+                      Colors.transparent,
+                    ],
               stops: const [0.0, 0.4, 0.7, 1.0],
-            ),
-          ),
-        )
-            .animate(
-              onPlay: (controller) => controller.repeat(),
-            )
+                  ),
+                ),
+              )
+                  .animate(
+                    onPlay: (controller) => controller.repeat(),
+                  )
             .moveY(
               duration: 4000.ms,
               begin: 0,
@@ -601,7 +608,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
               duration: 4000.ms,
               begin: 0,
               end: -60,
-              curve: Curves.easeInOut,
+                    curve: Curves.easeInOut,
               delay: 500.ms,
             )
             .fadeOut(
@@ -609,7 +616,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
               curve: Curves.easeOut,
               delay: 500.ms,
             )
-            .scale(
+                  .scale(
               duration: 4000.ms,
               begin: const Offset(0.5, 0.5),
               end: const Offset(2.5, 2.8),
@@ -619,28 +626,28 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
       ),
 
       // Duman Bulutu 5 (Sağ üst diyagonal)
-      Positioned(
+            Positioned(
         top: 80,
         right: 30,
         child: Container(
           width: 100,
           height: 100,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: RadialGradient(
-              colors: [
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
                 smokeColor.withOpacity(0.19),
                 smokeColor.withOpacity(0.11),
                 smokeColor.withOpacity(0.05),
-                Colors.transparent,
-              ],
+                      Colors.transparent,
+                    ],
               stops: const [0.0, 0.4, 0.7, 1.0],
-            ),
-          ),
-        )
-            .animate(
-              onPlay: (controller) => controller.repeat(),
-            )
+                  ),
+                ),
+              )
+                  .animate(
+                    onPlay: (controller) => controller.repeat(),
+                  )
             .moveY(
               duration: 4500.ms,
               begin: 0,
@@ -652,7 +659,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
               duration: 4500.ms,
               begin: 0,
               end: 70,
-              curve: Curves.easeInOut,
+                    curve: Curves.easeInOut,
               delay: 1500.ms,
             )
             .fadeOut(
@@ -660,7 +667,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
               curve: Curves.easeOut,
               delay: 1500.ms,
             )
-            .scale(
+                  .scale(
               duration: 4500.ms,
               begin: const Offset(0.5, 0.5),
               end: const Offset(2.7, 3.0),
@@ -676,7 +683,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
         child: Container(
           width: 85,
           height: 85,
-          decoration: BoxDecoration(
+                decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(
               colors: [
@@ -727,7 +734,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
         child: Container(
           width: 90,
           height: 90,
-          decoration: BoxDecoration(
+                        decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(
               colors: [
@@ -801,12 +808,12 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
               // RGB Glow Effects - Gerçekçi Yayılan Işık
               if (widget.isOn) ...[
                 // Ana Glow (Merkez - daha yoğun)
-            Positioned(
+                        Positioned(
                   top: 40,
                   child: Container(
                     width: 280,
                     height: 280,
-                decoration: BoxDecoration(
+                            decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
@@ -818,11 +825,11 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                     ],
                         stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
                   ),
-                ),
-              )
-                  .animate(
-                    onPlay: (controller) => controller.repeat(),
-                  )
+                            ),
+                          )
+                              .animate(
+                                onPlay: (controller) => controller.repeat(),
+                              )
                   .scale(
                     duration: AppConstants.durationGlow.ms,
                     begin: const Offset(1.0, 1.0),
@@ -836,29 +843,29 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                     end: const Offset(1.0, 1.0),
                     curve: Curves.easeInOut,
                   )
-                  .custom(
-                    duration: AppConstants.durationBreathing.ms,
-                    builder: (context, value, child) {
-                      return Opacity(
+                              .custom(
+                                duration: AppConstants.durationBreathing.ms,
+                                builder: (context, value, child) {
+                                  return Opacity(
                         opacity: 0.7 + (value * 0.3),
-                        child: child,
-                      );
-                    },
-                  )
-                  .then()
-                  .custom(
-                    duration: AppConstants.durationBreathing.ms,
-                    builder: (context, value, child) {
-                      return Opacity(
+                                    child: child,
+                                  );
+                                },
+                              )
+                              .then()
+                              .custom(
+                                duration: AppConstants.durationBreathing.ms,
+                                builder: (context, value, child) {
+                                  return Opacity(
                         opacity: 1.0 - (value * 0.3),
-                        child: child,
-                      );
-                    },
-                  ),
-            ),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                        ),
 
                 // Dış Glow (Daha geniş, daha hafif)
-            Positioned(
+                        Positioned(
                   top: -20,
                   child: Container(
                     width: 340,
@@ -875,10 +882,10 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                     stops: const [0.0, 0.4, 0.7, 1.0],
                   ),
                 ),
-              )
-                  .animate(
-                    onPlay: (controller) => controller.repeat(),
-                  )
+                          )
+                              .animate(
+                                onPlay: (controller) => controller.repeat(),
+                              )
                   .scale(
                     duration: (AppConstants.durationGlow * 1.5).ms,
                     begin: const Offset(1.0, 1.0),
@@ -961,22 +968,22 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                               begin: 8,
                               end: -8,
                               curve: Curves.easeInOut,
-                            ),
-                                  ],
-                          ),
-                        ),
-                ],
-              )
-                  .animate()
-                  .slideY(
-                    duration: AppConstants.durationNormal.ms,
-                    delay: 300.ms,
-                    begin: 0.3,
-                    curve: Curves.easeOut,
-                  )
-                  .fadeIn(duration: AppConstants.durationNormal.ms, delay: 300.ms),
+                    ),
+                  ],
+                ),
+              ),
             ],
-          ),
+          )
+              .animate()
+              .slideY(
+                duration: AppConstants.durationNormal.ms,
+                delay: 300.ms,
+                begin: 0.3,
+                curve: Curves.easeOut,
+              )
+              .fadeIn(duration: AppConstants.durationNormal.ms, delay: 300.ms),
+        ],
+      ),
         );
       },
     );
@@ -1162,16 +1169,16 @@ class _DoublePyramidPainter extends CustomPainter {
     
     final layerLinePaint = Paint()
       ..style = PaintingStyle.stroke
-      ..color = (isDarkMode ? gray700 : gray400).withOpacity(isDarkMode ? 0.6 : 0.5)
-      ..strokeWidth = 1.0;
+      ..color = (isDarkMode ? gray700 : gray400).withOpacity(isDarkMode ? 0.8 : 0.7)
+      ..strokeWidth = 2.5;
 
     final layerHighlightPaint = Paint()
       ..style = PaintingStyle.stroke
       ..color = Colors.white.withOpacity(isDarkMode ? 0.05 : 0.3)
       ..strokeWidth = 0.5;
 
-    // ÜST PİRAMİT KATMANLARI (8 katman)
-    const int topLayers = 8;
+    // ÜST PİRAMİT KATMANLARI (20 katman - daha sık ve geniş)
+    const int topLayers = 20;
     for (int i = 1; i < topLayers; i++) {
       final double y = 10 + (centerY - 10) * (i / topLayers);
       final double widthAtY = 80 - (80 - 30) * (i / topLayers);
@@ -1191,8 +1198,8 @@ class _DoublePyramidPainter extends CustomPainter {
       );
     }
 
-    // ALT PİRAMİT KATMANLARI (10 katman)
-    const int bottomLayers = 10;
+    // ALT PİRAMİT KATMANLARI (20 katman - daha sık ve geniş)
+    const int bottomLayers = 20;
     for (int i = 1; i < bottomLayers; i++) {
       final double y = centerY + (size.height - 10 - centerY) * (i / bottomLayers);
       final double widthAtY = 30 + (90 - 30) * (i / bottomLayers);
@@ -1242,7 +1249,7 @@ class _DeviceInfoPanel extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
+      children: [
           // Header
           Container(
             padding: const EdgeInsets.all(AppConstants.spacing2Xl),
@@ -1305,13 +1312,13 @@ class _DeviceInfoPanel extends StatelessWidget {
                     ],
                   ),
                 ),
-                GestureDetector(
+        GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
                   child: Container(
                     width: 36,
                     height: 36,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
                       color: (isDarkMode ? colors.textPrimary : Colors.white).withOpacity(0.2),
                     ),
                           child: Icon(
@@ -1447,15 +1454,15 @@ class _DeviceInfoPanel extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
+        Text(
                   value,
-                  style: TextStyle(
+          style: TextStyle(
                     fontSize: AppConstants.fontSizeBody,
                     fontWeight: FontWeight.w700,
                     color: colors.textPrimary,
-                  ),
-                    ),
-                  ],
+          ),
+        ),
+      ],
                 ),
               ),
 
@@ -1508,7 +1515,7 @@ class _DisconnectDialog extends StatelessWidget {
           ],
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.min,
       children: [
             // Icon
             Container(

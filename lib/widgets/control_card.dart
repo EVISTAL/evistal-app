@@ -43,12 +43,13 @@ class ControlCard extends StatelessWidget {
               // Outer shadow
               BoxShadow(
                 color: isActive && activeShadowColor != null
-                    ? activeShadowColor!.withOpacity(isDarkMode ? 0.2 : 0.4)
+                    ? activeShadowColor!.withOpacity(isDarkMode ? AppConstants.shadowOpacityDark : AppConstants.shadowOpacityMedium)
                     : (isDarkMode
-                        ? Colors.black.withOpacity(0.5)
-                        : Colors.black.withOpacity(0.08)),
-                blurRadius: isActive ? 20 : (isDarkMode ? 30 : 25),
-                offset: Offset(0, isDarkMode ? 10 : 8),
+                        ? Colors.black.withOpacity(AppConstants.shadowOpacityDarkStrong)
+                        : Colors.black.withOpacity(AppConstants.shadowOpacityLight)),
+                blurRadius: isActive ? AppConstants.shadowBlurMedium : (isDarkMode ? AppConstants.shadowBlurLarge : AppConstants.shadowBlurMedium),
+                offset: Offset(0, isDarkMode ? 8 : 6),
+                spreadRadius: 0,
               ),
               // Inner shadow
               BoxShadow(
@@ -105,7 +106,7 @@ class ControlCardContent extends StatelessWidget {
           ),
 
         if (icon != null || customIcon != null)
-          const SizedBox(height: AppConstants.radiusMd),
+          const SizedBox(height: AppConstants.spacingMd),
 
         // Value
         if (value != null) ...[
@@ -113,11 +114,16 @@ class ControlCardContent extends StatelessWidget {
             value!,
             style: TextStyle(
               fontSize: AppConstants.fontSizeBody,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               color: colors.textPrimary,
+              height: 1.3,
+              letterSpacing: 0.3,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: AppConstants.spacingSm),
+          const SizedBox(height: AppConstants.spacingXs),
         ],
 
         // Label
@@ -125,9 +131,14 @@ class ControlCardContent extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: AppConstants.fontSizeSubheadline,
+            fontWeight: FontWeight.w500,
             color: colors.textSecondary,
+            height: 1.3,
+            letterSpacing: 0.2,
           ),
           textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

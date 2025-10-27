@@ -109,9 +109,10 @@ class DeviceSelectionScreen extends StatelessWidget {
                                     BoxShadow(
                                       color: (isDarkMode
                                           ? colors.cardBackgroundAlt
-                                          : colors.gray300).withOpacity(0.5),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
+                                          : colors.gray300).withOpacity(isDarkMode ? AppConstants.shadowOpacityDark : AppConstants.shadowOpacityMedium),
+                                      blurRadius: AppConstants.shadowBlurSmall,
+                                      offset: const Offset(0, 3),
+                                      spreadRadius: 0,
                                     ),
                                   ],
                                 ),
@@ -261,10 +262,10 @@ class _ComingSoonDialog extends StatelessWidget {
           color: isDarkMode ? colors.cardBackground : Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.2),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
-              spreadRadius: 5,
+              color: Colors.black.withOpacity(isDarkMode ? AppConstants.shadowOpacityDarkStrong : AppConstants.shadowOpacityMedium),
+              blurRadius: AppConstants.shadowBlurLarge,
+              offset: const Offset(0, 8),
+              spreadRadius: 2,
             ),
           ],
         ),
@@ -280,9 +281,10 @@ class _ComingSoonDialog extends StatelessWidget {
                 gradient: colors.primaryGradient,
                 boxShadow: [
                   BoxShadow(
-                    color: colors.primary.withOpacity(0.5),
-                    blurRadius: 20,
-                    spreadRadius: 5,
+                    color: colors.primary.withOpacity(isDarkMode ? AppConstants.shadowOpacityDark : AppConstants.shadowOpacityMedium),
+                    blurRadius: AppConstants.shadowBlurMedium,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -345,9 +347,10 @@ class _ComingSoonDialog extends StatelessWidget {
                   gradient: colors.primaryGradient,
                   boxShadow: [
                     BoxShadow(
-                      color: colors.primary.withOpacity(0.4),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+                      color: colors.primary.withOpacity(isDarkMode ? AppConstants.shadowOpacityDark : AppConstants.shadowOpacityMedium),
+                      blurRadius: AppConstants.shadowBlurSmall,
+                      offset: const Offset(0, 3),
+                      spreadRadius: 0,
                     ),
                   ],
                 ),

@@ -46,10 +46,11 @@ class WeatherCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: isDarkMode
-                  ? Colors.white.withOpacity(0.2)
-                  : colors.gray500.withOpacity(0.3),
-              blurRadius: AppConstants.radiusXl,
-              offset: const Offset(0, 8),
+                  ? Colors.white.withOpacity(AppConstants.shadowOpacityDark)
+                  : colors.gray500.withOpacity(AppConstants.shadowOpacityMedium),
+              blurRadius: AppConstants.shadowBlurMedium,
+              offset: const Offset(0, 6),
+              spreadRadius: 0,
             ),
           ],
         ),
@@ -103,10 +104,13 @@ class WeatherCard extends StatelessWidget {
                             condition,
                             style: TextStyle(
                               fontSize: AppConstants.fontSizeTitle,
+                              fontWeight: FontWeight.w600,
                               color: (isDarkMode
                                       ? colors.cardBackgroundAlt
                                       : Colors.white)
                                   .withOpacity(0.9),
+                              height: 1.3,
+                              letterSpacing: 0.2,
                             ),
                           ),
                           const SizedBox(height: AppConstants.spacingXs),
@@ -118,7 +122,8 @@ class WeatherCard extends StatelessWidget {
                               color: isDarkMode
                                   ? colors.cardBackgroundAlt
                                   : Colors.white,
-                              height: 1.0,
+                              height: 1.1,
+                              letterSpacing: -2.0, // Daha modern görünüm
                             ),
                           ),
                         ],
@@ -187,10 +192,11 @@ class WeatherCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: isDarkMode
-                  ? Colors.white.withOpacity(0.2)
-                  : colors.gray500.withOpacity(0.3),
-              blurRadius: AppConstants.radiusXl,
-              offset: const Offset(0, 8),
+                  ? Colors.white.withOpacity(AppConstants.shadowOpacityDark)
+                  : colors.gray500.withOpacity(AppConstants.shadowOpacityMedium),
+              blurRadius: AppConstants.shadowBlurMedium,
+              offset: const Offset(0, 6),
+              spreadRadius: 0,
             ),
           ],
         ),
@@ -303,17 +309,22 @@ class _WeatherStat extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: AppConstants.fontSizeSubheadline,
+            fontWeight: FontWeight.w500,
             color: (isDarkMode ? colors.cardBackgroundAlt : Colors.white)
-                .withOpacity(0.8),
+                .withOpacity(0.75),
+            height: 1.4,
+            letterSpacing: 0.3,
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 4),
         Text(
           value,
           style: TextStyle(
             fontSize: AppConstants.fontSizeSubheadline,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             color: isDarkMode ? colors.cardBackgroundAlt : Colors.white,
+            height: 1.3,
+            letterSpacing: 0.2,
           ),
         ),
       ],

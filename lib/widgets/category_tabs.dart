@@ -16,7 +16,7 @@ class CategoryTabs extends StatelessWidget {
     final selectedCategory = deviceProvider.selectedCategory;
 
     return SizedBox(
-      height: 40,
+      height: AppConstants.categoryTabHeight,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: AppConstants.deviceCategories.length,
@@ -77,13 +77,14 @@ class _CategoryTab extends StatelessWidget {
             BoxShadow(
               color: isSelected
                   ? (isDarkMode
-                      ? Colors.white.withOpacity(0.3)
-                      : colors.gray400.withOpacity(0.4))
+                      ? Colors.white.withOpacity(AppConstants.shadowOpacityDark)
+                      : colors.gray400.withOpacity(AppConstants.shadowOpacityMedium))
                   : (isDarkMode
                       ? Colors.transparent
-                      : colors.gray200.withOpacity(0.5)),
-              blurRadius: isSelected ? 10 : 8,
-              offset: isSelected ? const Offset(0, 4) : const Offset(0, 2),
+                      : colors.gray200.withOpacity(AppConstants.shadowOpacityLight)),
+              blurRadius: isSelected ? AppConstants.shadowBlurSmall : 6,
+              offset: isSelected ? const Offset(0, 3) : const Offset(0, 2),
+              spreadRadius: 0,
             ),
           ],
         ),
@@ -92,12 +93,14 @@ class _CategoryTab extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: AppConstants.fontSizeSubheadline,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               color: isSelected
                   ? (isDarkMode
                       ? colors.cardBackgroundAlt
                       : Colors.white)
                   : colors.textSecondary,
+              height: 1.2,
+              letterSpacing: 0.3,
             ),
           ),
         ),
@@ -106,10 +109,10 @@ class _CategoryTab extends StatelessWidget {
         .animate()
         .slideX(
           duration: AppConstants.durationNormal.ms,
-          delay: (index * 100).ms,
-          begin: 0.2,
-          curve: Curves.easeOut,
+          delay: (index * AppConstants.durationStagger).ms,
+          begin: 0.15,
+          curve: Curves.easeOutCubic,
         )
-        .fadeIn(duration: AppConstants.durationNormal.ms, delay: (index * 100).ms);
+        .fadeIn(duration: AppConstants.durationNormal.ms, delay: (index * AppConstants.durationStagger).ms);
   }
 }

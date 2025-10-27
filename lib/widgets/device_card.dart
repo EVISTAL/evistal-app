@@ -37,15 +37,16 @@ class DeviceCard extends StatelessWidget {
             BoxShadow(
               color: device.isActive
                   ? (isDarkMode
-                      ? Colors.white.withOpacity(0.3)
-                      : colors.gray500.withOpacity(0.4))
+                      ? Colors.white.withOpacity(AppConstants.shadowOpacityDark)
+                      : colors.gray500.withOpacity(AppConstants.shadowOpacityMedium))
                   : (isDarkMode
-                      ? colors.cardBackgroundAlt.withOpacity(0.5)
-                      : colors.gray300.withOpacity(0.3)),
+                      ? colors.cardBackgroundAlt.withOpacity(AppConstants.shadowOpacityDark)
+                      : colors.gray300.withOpacity(AppConstants.shadowOpacityLight)),
               blurRadius: device.isActive
-                  ? AppConstants.radiusXl
-                  : AppConstants.radiusMd,
-              offset: Offset(0, device.isActive ? 8 : 4),
+                  ? AppConstants.shadowBlurMedium
+                  : AppConstants.shadowBlurSmall,
+              offset: Offset(0, device.isActive ? 6 : 3),
+              spreadRadius: 0,
             ),
           ],
         ),
@@ -133,7 +134,9 @@ class DeviceCard extends StatelessWidget {
                               ? colors.cardBackgroundAlt
                               : Colors.white)
                           : colors.textPrimary,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
+                      letterSpacing: 0.2,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -160,11 +163,11 @@ class DeviceCard extends StatelessWidget {
         .animate()
         .scale(
           duration: AppConstants.durationNormal.ms,
-          delay: (index * 100).ms,
-          begin: const Offset(0.9, 0.9),
-          curve: Curves.easeOut,
+          delay: (index * AppConstants.durationStagger).ms,
+          begin: const Offset(0.92, 0.92),
+          curve: Curves.easeOutCubic,
         )
-        .fadeIn(duration: AppConstants.durationNormal.ms, delay: (index * 100).ms);
+        .fadeIn(duration: AppConstants.durationNormal.ms, delay: (index * AppConstants.durationStagger).ms);
   }
 }
 
