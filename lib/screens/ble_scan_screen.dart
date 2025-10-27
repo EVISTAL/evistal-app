@@ -255,17 +255,14 @@ class _BLEScanScreenState extends State<BLEScanScreen>
             height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFF3B82F6),
-                  const Color(0xFF1D4ED8),
-                ],
-              ),
+              gradient: isDarkMode 
+                  ? AppColors.primaryDarkGradient 
+                  : AppColors.primaryLightGradient,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF3B82F6).withOpacity(0.4),
+                  color: (isDarkMode 
+                      ? AppColors.primaryDark 
+                      : AppColors.primaryLight).withOpacity(0.4),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -302,7 +299,9 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: const Color(0xFF3B82F6)
+                      color: (isDarkMode 
+                          ? Colors.white 
+                          : AppColors.primaryLight)
                           .withOpacity(0.3 - (_scanController.value * 0.3)),
                       width: 2,
                     ),
@@ -317,7 +316,9 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: const Color(0xFF3B82F6)
+                      color: (isDarkMode 
+                          ? Colors.white 
+                          : AppColors.primaryLight)
                           .withOpacity(0.5 - (_scanController.value * 0.5)),
                       width: 2,
                     ),
@@ -332,7 +333,9 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: const Color(0xFF3B82F6)
+                      color: (isDarkMode 
+                          ? Colors.white 
+                          : AppColors.primaryLight)
                           .withOpacity(0.7 - (_scanController.value * 0.7)),
                       width: 2,
                     ),
@@ -347,14 +350,14 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      const Color(0xFF3B82F6).withOpacity(0.3),
-                      const Color(0xFF3B82F6).withOpacity(0.1),
+                      (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(0.3),
+                      (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(0.1),
                       Colors.transparent,
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF3B82F6).withOpacity(0.3),
+                      color: (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(0.3),
                       blurRadius: 30,
                       spreadRadius: 10,
                     ),
@@ -364,7 +367,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   child: Icon(
                     _isScanning ? LucideIcons.radio : LucideIcons.check,
                     size: 48,
-                    color: const Color(0xFF3B82F6),
+                    color: isDarkMode ? Colors.white : AppColors.primaryLight,
                   ),
                 ),
               )
@@ -475,7 +478,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
             ? AppColors.darkCardBackgroundAlt
             : AppColors.lightGray100,
         border: Border.all(
-          color: const Color(0xFF3B82F6).withOpacity(0.2),
+          color: (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(0.2),
           width: 1,
         ),
         boxShadow: [
@@ -499,14 +502,19 @@ class _BLEScanScreenState extends State<BLEScanScreen>
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFF3B82F6).withOpacity(0.8),
-                  const Color(0xFF1D4ED8).withOpacity(0.8),
-                ],
+                colors: isDarkMode 
+                    ? [
+                        AppColors.primaryDark.withOpacity(0.8),
+                        AppColors.primaryDarkAccent.withOpacity(0.8),
+                      ]
+                    : [
+                        AppColors.primaryLight.withOpacity(0.8),
+                        AppColors.primaryLightDark.withOpacity(0.8),
+                      ],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF3B82F6).withOpacity(0.3),
+                  color: (isDarkMode ? AppColors.primaryDark : AppColors.primaryLight).withOpacity(0.3),
                   blurRadius: 12,
                   spreadRadius: 2,
                 ),
@@ -605,17 +613,12 @@ class _BLEScanScreenState extends State<BLEScanScreen>
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppConstants.radiusMd),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF3B82F6),
-                    Color(0xFF1D4ED8),
-                  ],
-                ),
+                gradient: isDarkMode 
+                    ? AppColors.primaryDarkGradient 
+                    : AppColors.primaryLightGradient,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF3B82F6).withOpacity(0.4),
+                    color: (isDarkMode ? AppColors.primaryDark : AppColors.primaryLight).withOpacity(0.4),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -661,7 +664,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     ? AppColors.darkCardBackgroundAlt
                     : AppColors.lightGray100),
             border: Border.all(
-              color: const Color(0xFF3B82F6).withOpacity(_isScanning ? 0.1 : 0.3),
+              color: (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(_isScanning ? 0.1 : 0.3),
               width: 1.5,
             ),
           ),
@@ -675,7 +678,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     ? (isDarkMode
                         ? AppColors.darkTextSecondary
                         : AppColors.lightTextSecondary)
-                    : const Color(0xFF3B82F6),
+                    : (isDarkMode ? Colors.white : AppColors.primaryLight),
               ),
               const SizedBox(width: AppConstants.spacingSm),
               Text(
@@ -687,7 +690,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                       ? (isDarkMode
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary)
-                      : const Color(0xFF3B82F6),
+                      : (isDarkMode ? Colors.white : AppColors.primaryLight),
                 ),
               ),
             ],
@@ -739,17 +742,12 @@ class _ConnectingDialog extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    const Color(0xFF3B82F6),
-                    const Color(0xFF1D4ED8),
-                  ],
-                ),
+                gradient: isDarkMode 
+                    ? AppColors.primaryDarkGradient 
+                    : AppColors.primaryLightGradient,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF3B82F6).withOpacity(0.4),
+                    color: (isDarkMode ? AppColors.primaryDark : AppColors.primaryLight).withOpacity(0.4),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),

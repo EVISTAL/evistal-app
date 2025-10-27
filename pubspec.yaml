@@ -46,6 +46,12 @@ dependencies:
   
   # Animations
   flutter_animate: ^4.5.0
+  
+  # HTTP Requests
+  http: ^1.1.0
+  
+  # Location Services
+  geolocator: ^10.1.0
 
 dev_dependencies:
   flutter_test:

@@ -17,6 +17,14 @@ import 'ble_scan_screen.dart';
 class DeviceSelectionScreen extends StatelessWidget {
   const DeviceSelectionScreen({super.key});
 
+  /// Coming Soon Dialog'unu göster
+  void _showComingSoonDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const _ComingSoonDialog(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
@@ -115,7 +123,7 @@ class DeviceSelectionScreen extends StatelessWidget {
                                   child: Icon(
                                     isDarkMode ? LucideIcons.sun : LucideIcons.moon,
                                     color: isDarkMode
-                                        ? AppColors.themeIconSun
+                                        ? Colors.white
                                         : AppColors.darkCardBackground,
                                     size: AppConstants.iconSizeSmall,
                                   ),
@@ -206,6 +214,9 @@ class DeviceSelectionScreen extends StatelessWidget {
                                           Duration(milliseconds: AppConstants.durationNormal),
                                     ),
                                   );
+                                } else {
+                                  // Diğer cihazlar için Coming Soon dialog'u göster
+                                  _showComingSoonDialog(context);
                                 }
                               },
                             );
@@ -232,6 +243,157 @@ class SliverToArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(child: child);
+  }
+}
+
+/// Coming Soon Dialog
+class _ComingSoonDialog extends StatelessWidget {
+  const _ComingSoonDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(AppConstants.spacing2Xl),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppConstants.radiusXl * 1.5),
+          color: isDarkMode
+              ? AppColors.darkCardBackground
+              : Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.2),
+              blurRadius: 30,
+              offset: const Offset(0, 10),
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Rocket Icon
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: isDarkMode 
+                    ? AppColors.primaryDarkGradient 
+                    : AppColors.primaryLightGradient,
+                boxShadow: [
+                  BoxShadow(
+                    color: (isDarkMode ? AppColors.primaryDark : AppColors.primaryLight).withOpacity(0.5),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Text(
+                  '🚀',
+                  style: TextStyle(fontSize: 40),
+                ),
+              ),
+            )
+                .animate()
+                .scale(duration: AppConstants.durationNormal.ms)
+                .fadeIn(duration: AppConstants.durationNormal.ms)
+                .then()
+                .shake(duration: 500.ms),
+
+            const SizedBox(height: AppConstants.spacing2Xl),
+
+            // Title
+            Text(
+              'Coming Soon',
+              style: TextStyle(
+                fontSize: AppConstants.fontSizeTitle,
+                fontWeight: FontWeight.w700,
+                color: isDarkMode
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+              textAlign: TextAlign.center,
+            )
+                .animate()
+                .fadeIn(duration: AppConstants.durationNormal.ms, delay: 100.ms)
+                .slideY(begin: -0.2, duration: AppConstants.durationNormal.ms),
+
+            const SizedBox(height: AppConstants.spacingSm),
+
+            // Description
+            Text(
+              'This feature will be available soon!\nStay tuned for updates.',
+              style: TextStyle(
+                fontSize: AppConstants.fontSizeBody,
+                color: isDarkMode
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
+              textAlign: TextAlign.center,
+            )
+                .animate()
+                .fadeIn(duration: AppConstants.durationNormal.ms, delay: 150.ms)
+                .slideY(begin: -0.2, duration: AppConstants.durationNormal.ms),
+
+            const SizedBox(height: AppConstants.spacing2Xl),
+
+            // Close Button
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppConstants.spacing2Xl,
+                  vertical: AppConstants.spacingLg,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppConstants.radiusFull),
+                  gradient: isDarkMode 
+                      ? AppColors.primaryDarkGradient 
+                      : AppColors.primaryLightGradient,
+                  boxShadow: [
+                    BoxShadow(
+                      color: (isDarkMode ? AppColors.primaryDark : AppColors.primaryLight).withOpacity(0.4),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      LucideIcons.check,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    const SizedBox(width: AppConstants.spacingSm),
+                    Text(
+                      'Got it!',
+                      style: TextStyle(
+                        fontSize: AppConstants.fontSizeBody,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+                .animate()
+                .fadeIn(duration: AppConstants.durationNormal.ms, delay: 200.ms)
+                .slideY(begin: 0.2, duration: AppConstants.durationNormal.ms),
+          ],
+        ),
+      )
+          .animate()
+          .fadeIn(duration: AppConstants.durationNormal.ms)
+          .scale(begin: const Offset(0.8, 0.8), duration: AppConstants.durationNormal.ms),
+    );
   }
 }
 

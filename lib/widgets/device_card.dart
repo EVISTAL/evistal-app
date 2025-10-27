@@ -153,15 +153,16 @@ class DeviceCard extends StatelessWidget {
 
                   const SizedBox(height: AppConstants.spacingSm),
 
-                  // Toggle Switch
-                  _ToggleSwitch(
-                    isActive: device.isActive,
-                    isDarkMode: isDarkMode,
-                    isAnimated: device.isActive,
-                    onTap: () {
-                      deviceProvider.toggleDevice(device.id);
-                    },
-                  ),
+                  // Toggle Switch - Sadece EVISTAL's Humidifier için
+                  if (device.id == '1')
+                    _ToggleSwitch(
+                      isActive: device.isActive,
+                      isDarkMode: isDarkMode,
+                      isAnimated: device.isActive,
+                      onTap: () {
+                        deviceProvider.toggleDevice(device.id);
+                      },
+                    ),
                 ],
               ),
             ),

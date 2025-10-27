@@ -168,8 +168,6 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                         child: ControlCard(
                           onTap: () => deviceProvider.cycleRgbMode(),
                           isActive: true,
-                          activeBackgroundColor: AppColors.getRgbLightColor(purifierState.rgbMode).withOpacity(0.15),
-                          activeShadowColor: AppColors.getRgbLightColor(purifierState.rgbMode),
                           child: ControlCardContent(
                             customIcon: SizedBox(
                               width: AppConstants.iconSizeLarge,
@@ -177,10 +175,14 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  gradient: AppColors.getRgbGradient(purifierState.rgbMode),
+                                  gradient: isDarkMode 
+                                      ? AppColors.darkActiveGradient 
+                                      : AppColors.lightActiveGradient,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.getRgbLightColor(purifierState.rgbMode).withOpacity(0.4),
+                                      color: (isDarkMode 
+                                          ? Colors.white 
+                                          : AppColors.lightGray500).withOpacity(0.4),
                                       blurRadius: 8,
                                       spreadRadius: 1,
                                     ),
@@ -192,7 +194,9 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                                     style: TextStyle(
                                       fontSize: AppConstants.fontSizeBody,
                                       fontWeight: FontWeight.w700,
-                                      color: purifierState.rgbMode == 3 ? Colors.black87 : Colors.white,
+                                      color: isDarkMode 
+                                          ? AppColors.darkTextPrimary 
+                                          : AppColors.lightTextPrimary,
                                     ),
                                   ),
                                 ),
@@ -239,10 +243,6 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                         child: ControlCard(
                           onTap: () => context.read<ThemeProvider>().toggleTheme(),
                           isActive: isDarkMode,
-                          activeBackgroundColor: isDarkMode
-                              ? AppColors.nightModeBgDark
-                              : AppColors.nightModeBgLight,
-                          activeShadowColor: const Color(0xFF6366F1),
                           child: ControlCardContent(
                             icon: isDarkMode ? LucideIcons.moon : LucideIcons.sun,
                             value: isDarkMode ? 'ON' : 'OFF',
@@ -972,82 +972,6 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                       ],
                     ),
                   ),
-
-                  const SizedBox(height: 16),
-
-                  // Base - RGB Mode'a Göre Parlayan Taban
-                      Container(
-                    width: 180,
-                    height: 32,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                        colors: widget.isOn
-                            ? [
-                                currentColor.withOpacity(0.4),
-                                currentColor.withOpacity(0.6),
-                              ]
-                            : (widget.isDarkMode
-                                ? [AppColors.darkCardBackground, AppColors.darkCardBackgroundAlt]
-                                : [AppColors.lightGray400, AppColors.lightGray500]),
-                      ),
-                      border: widget.isOn
-                          ? Border.all(
-                              color: currentColor.withOpacity(0.6),
-                              width: 1.5,
-                            )
-                          : null,
-                              boxShadow: [
-                        // Ana gölge
-                                BoxShadow(
-                          color: widget.isDarkMode
-                              ? Colors.black.withOpacity(0.5)
-                              : AppColors.lightGray500.withOpacity(0.3),
-                          blurRadius: widget.isDarkMode ? 24 : 20,
-                          offset: const Offset(0, 8),
-                        ),
-                        // RGB Glow (aktif olduğunda)
-                        if (widget.isOn)
-                          BoxShadow(
-                            color: currentColor.withOpacity(0.6),
-                            blurRadius: 32,
-                                  spreadRadius: 2,
-                            offset: const Offset(0, 4),
-                          ),
-                        if (widget.isOn)
-                          BoxShadow(
-                            color: currentColor.withOpacity(0.4),
-                            blurRadius: 48,
-                            spreadRadius: 4,
-                            offset: const Offset(0, 8),
-                                ),
-                              ],
-                            ),
-                          )
-                              .animate(
-                        onPlay: (controller) => widget.isOn ? controller.repeat() : null,
-                              )
-                              .custom(
-                        duration: 2000.ms,
-                                builder: (context, value, child) {
-                          return Transform.scale(
-                            scale: widget.isOn ? 1.0 + (value * 0.03) : 1.0,
-                                    child: child,
-                                  );
-                                },
-                              )
-                              .then()
-                              .custom(
-                        duration: 2000.ms,
-                                builder: (context, value, child) {
-                          return Transform.scale(
-                            scale: widget.isOn ? 1.03 - (value * 0.03) : 1.0,
-                                    child: child,
-                                  );
-                                },
-                              ),
                 ],
               )
                   .animate()
@@ -1350,14 +1274,9 @@ class _DeviceInfoPanel extends StatelessWidget {
                 topLeft: Radius.circular(AppConstants.radiusXl * 1.5),
                 topRight: Radius.circular(AppConstants.radiusXl * 1.5),
               ),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFF3B82F6),
-                  const Color(0xFF1D4ED8),
-                ],
-              ),
+              gradient: isDarkMode 
+                  ? AppColors.primaryDarkGradient 
+                  : AppColors.primaryLightGradient,
             ),
             child: Row(
               children: [
@@ -1444,7 +1363,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                   icon: LucideIcons.tag,
                   label: 'VERSION',
                   value: 'v2.1.0',
-                  color: const Color(0xFF10B981),
+                  color: isDarkMode ? Colors.white : AppColors.primaryLight,
                   isDarkMode: isDarkMode,
                   delay: 200,
                 ),
@@ -1455,7 +1374,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                   icon: LucideIcons.hash,
                   label: 'ID',
                   value: 'EV-2024-A1F2B3',
-                  color: const Color(0xFF3B82F6),
+                  color: isDarkMode ? Colors.white : AppColors.primaryLight,
                   isDarkMode: isDarkMode,
                   delay: 300,
                 ),
@@ -1466,7 +1385,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                   icon: LucideIcons.type,
                   label: 'NAME',
                   value: 'EVISTAL\'s Humidifier',
-                  color: const Color(0xFF8B5CF6),
+                  color: isDarkMode ? Colors.white : AppColors.primaryLight,
                   isDarkMode: isDarkMode,
                   delay: 400,
                 ),

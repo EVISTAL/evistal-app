@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/theme_provider.dart';
+import '../providers/weather_provider.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
 
@@ -13,10 +14,21 @@ class WeatherCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    final weatherProvider = context.watch<WeatherProvider>();
+    final weatherData = weatherProvider.weatherData;
+
+    // Veri yüklenirken veya hata varsa varsayılan değerler göster
+    final temperature = weatherData?.temperature.toStringAsFixed(0) ?? '--';
+    final condition = weatherData?.condition ?? 'Loading...';
+    final emoji = weatherData?.emoji ?? '⏳';
+    final humidity = weatherData?.humidity.toString() ?? '--';
+    final windSpeed = weatherData?.windSpeed.toStringAsFixed(0) ?? '--';
+    final aqi = weatherData?.aqi.toString() ?? '--';
 
     return GestureDetector(
       onTap: () {
-        // Tıklama animasyonu için
+        // Manuel yenileme
+        weatherProvider.refresh();
       },
       child: Container(
         width: double.infinity,
@@ -80,7 +92,7 @@ class WeatherCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Cloudy',
+                            condition,
                             style: TextStyle(
                               fontSize: AppConstants.fontSizeTitle,
                               color: (isDarkMode
@@ -91,7 +103,7 @@ class WeatherCard extends StatelessWidget {
                           ),
                           const SizedBox(height: AppConstants.spacingXs),
                           Text(
-                            '28°',
+                            '$temperature°',
                             style: TextStyle(
                               fontSize: AppConstants.fontSizeExtraLarge,
                               fontWeight: FontWeight.w700,
@@ -105,9 +117,9 @@ class WeatherCard extends StatelessWidget {
                       ),
 
                       // Sağ taraf - Emoji
-                      const Text(
-                        '☁️',
-                        style: TextStyle(fontSize: AppConstants.fontSizeExtraLarge),
+                      Text(
+                        emoji,
+                        style: const TextStyle(fontSize: AppConstants.fontSizeExtraLarge),
                       ),
                     ],
                   ),
@@ -120,17 +132,17 @@ class WeatherCard extends StatelessWidget {
                     children: [
                       _WeatherStat(
                         label: 'AQI',
-                        value: '37',
+                        value: aqi,
                         isDarkMode: isDarkMode,
                       ),
                       _WeatherStat(
                         label: 'Humidity',
-                        value: '55%',
+                        value: '$humidity%',
                         isDarkMode: isDarkMode,
                       ),
                       _WeatherStat(
                         label: 'Wind',
-                        value: '8 km/h',
+                        value: '$windSpeed km/h',
                         isDarkMode: isDarkMode,
                       ),
                     ],

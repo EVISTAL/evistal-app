@@ -91,6 +91,40 @@ class AppColors {
   static const Color rgbMode3Light = Color(0xFFFFFFFF);
   
   // ============================================================================
+  // PRIMARY THEME (Monochrome - No Blue Colors)
+  // ============================================================================
+  
+  // Dark Mode: Black & White only
+  static const Color primaryDark = Color(0xFF000000); // Black
+  static const Color primaryDarkAccent = Color(0xFF1F1F1F); // Dark Gray
+  static const Color primaryDarkLight = Color(0xFFFFFFFF); // White
+  
+  // Light Mode: Gray & White only
+  static const Color primaryLight = Color(0xFF6B7280); // gray-500
+  static const Color primaryLightDark = Color(0xFF4B5563); // gray-600
+  static const Color primaryLightAccent = Color(0xFF9CA3AF); // gray-400
+  
+  // Dark Mode Primary Gradient (Black to Dark Gray)
+  static const LinearGradient primaryDarkGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF1F1F1F), // Dark Gray
+      Color(0xFF000000), // Black
+    ],
+  );
+  
+  // Light Mode Primary Gradient (Gray shades)
+  static const LinearGradient primaryLightGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF6B7280), // gray-500
+      Color(0xFF4B5563), // gray-600
+    ],
+  );
+  
+  // ============================================================================
   // ACTIVE ELEMENT GRADIENTS
   // ============================================================================
   
@@ -164,7 +198,8 @@ class AppColors {
   // SPECIAL COLORS
   // ============================================================================
   
-  static const Color themeIconSun = Color(0xFFFBBF24); // yellow-400
+  // REMOVED - Now using monochrome theme
+  // static const Color themeIconSun = Color(0xFFFBBF24); // yellow-400
   
   // Mode Active Background Colors (Dark Mode)
   static const Color autoModeBgDark = Color(0x4D083344); // #083344 with 30% opacity

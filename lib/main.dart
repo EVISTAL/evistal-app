@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/device_provider.dart';
+import 'providers/weather_provider.dart';
 import 'screens/device_selection_screen.dart';
 import 'utils/colors.dart';
 import 'utils/constants.dart';
@@ -37,6 +38,9 @@ class EvistalApp extends StatelessWidget {
         
         // Cihaz Provider
         ChangeNotifierProvider(create: (_) => DeviceProvider()),
+        
+        // Hava Durumu Provider
+        ChangeNotifierProvider(create: (_) => WeatherProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

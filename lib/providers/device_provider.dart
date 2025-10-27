@@ -48,14 +48,6 @@ class DeviceProvider with ChangeNotifier {
         isActive: true,
         category: 'Humidifiers',
       ),
-      DeviceModel(
-        id: '3',
-        name: 'Bedroom Humidifier',
-        type: DeviceType.purifier,
-        icon: LucideIcons.droplets,
-        isActive: false,
-        category: 'Humidifiers',
-      ),
       
       // ========== SMART TV ==========
       DeviceModel(
@@ -97,7 +89,7 @@ class DeviceProvider with ChangeNotifier {
         name: 'Bedroom Light',
         type: DeviceType.lighting,
         icon: LucideIcons.lightbulb,
-        isActive: true,
+        isActive: false,
         category: 'Smart Lighting',
       ),
       DeviceModel(
