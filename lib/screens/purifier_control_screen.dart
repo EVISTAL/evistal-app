@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -1467,19 +1468,32 @@ class _DeviceInfoPanel extends StatelessWidget {
               ),
 
           // Copy Icon
-              Container(
-            width: 36,
-            height: 36,
-                decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: color.withOpacity(0.1),
-            ),
-            child: Icon(
-              LucideIcons.copy,
-              color: color,
-              size: 18,
+          GestureDetector(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: value));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$label copied to clipboard'),
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: colors.textPrimary,
                 ),
+              );
+            },
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color.withOpacity(0.1),
               ),
+              child: Icon(
+                LucideIcons.copy,
+                color: color,
+                size: 18,
+              ),
+            ),
+          ),
             ],
       ),
           )
