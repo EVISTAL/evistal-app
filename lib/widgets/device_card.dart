@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../models/device_model.dart';
-import '../providers/theme_provider.dart';
 import '../providers/device_provider.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
@@ -23,7 +22,8 @@ class DeviceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    final colors = context.colors; // Temadan renkleri al
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final deviceProvider = context.watch<DeviceProvider>();
 
     return GestureDetector(
@@ -31,25 +31,17 @@ class DeviceCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppConstants.radiusXl),
-          gradient: device.isActive
-              ? (isDarkMode
-                  ? AppColors.darkActiveGradient
-                  : AppColors.lightActiveGradient)
-              : null,
-          color: device.isActive
-              ? null
-              : (isDarkMode
-                  ? AppColors.darkCardBackground
-                  : AppColors.lightCardBackground),
+          gradient: device.isActive ? colors.activeGradient : null,
+          color: device.isActive ? null : colors.cardBackground,
           boxShadow: [
             BoxShadow(
               color: device.isActive
                   ? (isDarkMode
                       ? Colors.white.withOpacity(0.3)
-                      : AppColors.lightGray500.withOpacity(0.4))
+                      : colors.gray500.withOpacity(0.4))
                   : (isDarkMode
-                      ? AppColors.darkCardBackgroundAlt.withOpacity(0.5)
-                      : AppColors.lightGray300.withOpacity(0.3)),
+                      ? colors.cardBackgroundAlt.withOpacity(0.5)
+                      : colors.gray300.withOpacity(0.3)),
               blurRadius: device.isActive
                   ? AppConstants.radiusXl
                   : AppConstants.radiusMd,
@@ -104,12 +96,12 @@ class DeviceCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppConstants.radiusLg),
                       color: device.isActive
                           ? (isDarkMode
-                                  ? AppColors.darkCardBackground
+                                  ? colors.cardBackground
                                   : Colors.white)
                               .withOpacity(0.3)
                           : (isDarkMode
-                              ? AppColors.darkGray700.withOpacity(0.8)
-                              : AppColors.lightGray100),
+                              ? colors.gray700.withOpacity(0.8)
+                              : colors.gray100),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
@@ -122,11 +114,9 @@ class DeviceCard extends StatelessWidget {
                       device.icon,
                       color: device.isActive
                           ? (isDarkMode
-                              ? AppColors.darkCardBackgroundAlt
+                              ? colors.cardBackgroundAlt
                               : Colors.white)
-                          : (isDarkMode
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary),
+                          : colors.textSecondary,
                       size: AppConstants.iconSizeMedium,
                     ),
                   ),
@@ -140,11 +130,9 @@ class DeviceCard extends StatelessWidget {
                       fontSize: AppConstants.fontSizeBody,
                       color: device.isActive
                           ? (isDarkMode
-                              ? AppColors.darkCardBackgroundAlt
+                              ? colors.cardBackgroundAlt
                               : Colors.white)
-                          : (isDarkMode
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary),
+                          : colors.textPrimary,
                       fontWeight: FontWeight.w500,
                     ),
                     maxLines: 2,
@@ -157,7 +145,6 @@ class DeviceCard extends StatelessWidget {
                   if (device.id == '1')
                     _ToggleSwitch(
                       isActive: device.isActive,
-                      isDarkMode: isDarkMode,
                       isAnimated: device.isActive,
                       onTap: () {
                         deviceProvider.toggleDevice(device.id);
@@ -184,19 +171,20 @@ class DeviceCard extends StatelessWidget {
 /// Toggle Switch Widget
 class _ToggleSwitch extends StatelessWidget {
   final bool isActive;
-  final bool isDarkMode;
   final bool isAnimated;
   final VoidCallback onTap;
 
   const _ToggleSwitch({
     required this.isActive,
-    required this.isDarkMode,
     required this.isAnimated,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors; // Temadan renkleri al
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -206,12 +194,12 @@ class _ToggleSwitch extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppConstants.radiusFull),
           color: isActive
               ? (isDarkMode
-                      ? AppColors.darkCardBackground
+                      ? colors.cardBackground
                       : Colors.white)
                   .withOpacity(isDarkMode ? 0.5 : 0.9)
               : (isDarkMode
-                  ? AppColors.darkGray700
-                  : AppColors.lightGray200),
+                  ? colors.gray700
+                  : colors.gray200),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -234,9 +222,9 @@ class _ToggleSwitch extends StatelessWidget {
               shape: BoxShape.circle,
               color: isActive
                   ? (isDarkMode
-                      ? AppColors.darkCardBackgroundAlt
-                      : AppColors.lightGray500)
-                  : AppColors.lightGray500,
+                      ? colors.cardBackgroundAlt
+                      : colors.gray500)
+                  : colors.gray500,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.2),
@@ -251,5 +239,3 @@ class _ToggleSwitch extends StatelessWidget {
     );
   }
 }
-
-

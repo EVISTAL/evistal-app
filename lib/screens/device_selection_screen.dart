@@ -27,14 +27,13 @@ class DeviceSelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    final colors = context.colors; // Temadan renkleri al
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final deviceProvider = context.watch<DeviceProvider>();
     final themeProvider = context.read<ThemeProvider>();
 
     return Scaffold(
-      backgroundColor: isDarkMode
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Center(
               child: ConstrainedBox(
@@ -64,9 +63,7 @@ class DeviceSelectionScreen extends StatelessWidget {
                                   'Hey, EVISTAL\'s USER',
                                   style: TextStyle(
                                     fontSize: AppConstants.fontSizeBody,
-                                    color: isDarkMode
-                                        ? AppColors.darkTextSecondary
-                                        : AppColors.lightTextSecondary,
+                                    color: colors.textSecondary,
                                   ),
                                 )
                                     .animate()
@@ -77,9 +74,7 @@ class DeviceSelectionScreen extends StatelessWidget {
                                   'Welcome back at home',
                                   style: TextStyle(
                                     fontSize: AppConstants.fontSizeSubheadline,
-                                    color: isDarkMode
-                                        ? AppColors.darkTextTertiary
-                                        : AppColors.lightIconInactive,
+                                    color: colors.textTertiary,
                                   ),
                                 )
                                     .animate()
@@ -103,14 +98,18 @@ class DeviceSelectionScreen extends StatelessWidget {
                                 height: AppConstants.iconSizeXXL,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(AppConstants.radiusMd),
-                                  color: isDarkMode
-                                      ? AppColors.darkCardBackground
-                                      : AppColors.lightCardBackground,
+                                  color: colors.cardBackground,
+                                  border: isDarkMode
+                                      ? null
+                                      : Border.all(
+                                          color: colors.border,
+                                          width: 1.5,
+                                        ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: isDarkMode
-                                          ? AppColors.darkCardBackgroundAlt.withOpacity(0.5)
-                                          : AppColors.lightGray300.withOpacity(0.5),
+                                      color: (isDarkMode
+                                          ? colors.cardBackgroundAlt
+                                          : colors.gray300).withOpacity(0.5),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
@@ -122,9 +121,7 @@ class DeviceSelectionScreen extends StatelessWidget {
                                   turns: isDarkMode ? 0 : 0.5,
                                   child: Icon(
                                     isDarkMode ? LucideIcons.sun : LucideIcons.moon,
-                                    color: isDarkMode
-                                        ? AppColors.darkSoftWhite
-                                        : AppColors.darkCardBackground,
+                                    color: colors.textPrimary,
                                     size: AppConstants.iconSizeSmall,
                                   ),
                                 ),
@@ -252,7 +249,8 @@ class _ComingSoonDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    final colors = context.colors; // Temadan renkleri al
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -260,9 +258,7 @@ class _ComingSoonDialog extends StatelessWidget {
         padding: const EdgeInsets.all(AppConstants.spacing2Xl),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppConstants.radiusXl * 1.5),
-          color: isDarkMode
-              ? AppColors.darkCardBackground
-              : Colors.white,
+          color: isDarkMode ? colors.cardBackground : Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.2),
@@ -281,12 +277,10 @@ class _ComingSoonDialog extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: isDarkMode 
-                    ? AppColors.primaryDarkGradient 
-                    : AppColors.primaryLightGradient,
+                gradient: colors.primaryGradient,
                 boxShadow: [
                   BoxShadow(
-                    color: (isDarkMode ? AppColors.primaryDark : AppColors.primaryLight).withOpacity(0.5),
+                    color: colors.primary.withOpacity(0.5),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -313,9 +307,7 @@ class _ComingSoonDialog extends StatelessWidget {
               style: TextStyle(
                 fontSize: AppConstants.fontSizeTitle,
                 fontWeight: FontWeight.w700,
-                color: isDarkMode
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: colors.textPrimary,
               ),
               textAlign: TextAlign.center,
             )
@@ -330,9 +322,7 @@ class _ComingSoonDialog extends StatelessWidget {
               'This feature will be available soon!\nStay tuned for updates.',
               style: TextStyle(
                 fontSize: AppConstants.fontSizeBody,
-                color: isDarkMode
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: colors.textSecondary,
               ),
               textAlign: TextAlign.center,
             )
@@ -352,12 +342,10 @@ class _ComingSoonDialog extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-                  gradient: isDarkMode 
-                      ? AppColors.primaryDarkGradient 
-                      : AppColors.primaryLightGradient,
+                  gradient: colors.primaryGradient,
                   boxShadow: [
                     BoxShadow(
-                      color: (isDarkMode ? AppColors.primaryDark : AppColors.primaryLight).withOpacity(0.4),
+                      color: colors.primary.withOpacity(0.4),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -368,7 +356,7 @@ class _ComingSoonDialog extends StatelessWidget {
                   children: [
                     Icon(
                       LucideIcons.check,
-                      color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+                      color: isDarkMode ? colors.textPrimary : Colors.white,
                       size: 20,
                     ),
                     const SizedBox(width: AppConstants.spacingSm),
@@ -377,7 +365,7 @@ class _ComingSoonDialog extends StatelessWidget {
                       style: TextStyle(
                         fontSize: AppConstants.fontSizeBody,
                         fontWeight: FontWeight.w600,
-                        color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+                        color: isDarkMode ? colors.textPrimary : Colors.white,
                       ),
                     ),
                   ],
@@ -396,5 +384,3 @@ class _ComingSoonDialog extends StatelessWidget {
     );
   }
 }
-
-

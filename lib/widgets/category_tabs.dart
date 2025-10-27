@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../providers/theme_provider.dart';
 import '../providers/device_provider.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
@@ -13,7 +12,6 @@ class CategoryTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
     final deviceProvider = context.watch<DeviceProvider>();
     final selectedCategory = deviceProvider.selectedCategory;
 
@@ -31,7 +29,6 @@ class CategoryTabs extends StatelessWidget {
           return _CategoryTab(
             label: category,
             isSelected: isSelected,
-            isDarkMode: isDarkMode,
             index: index,
             onTap: () {
               deviceProvider.selectCategory(category);
@@ -47,20 +44,21 @@ class CategoryTabs extends StatelessWidget {
 class _CategoryTab extends StatelessWidget {
   final String label;
   final bool isSelected;
-  final bool isDarkMode;
   final int index;
   final VoidCallback onTap;
 
   const _CategoryTab({
     required this.label,
     required this.isSelected,
-    required this.isDarkMode,
     required this.index,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -73,19 +71,17 @@ class _CategoryTab extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppConstants.radiusFull),
           color: isSelected
-              ? (isDarkMode ? Colors.white : AppColors.lightGray400)
-              : (isDarkMode
-                  ? AppColors.darkCardBackground
-                  : AppColors.lightCardBackground),
+              ? (isDarkMode ? Colors.white : colors.gray400)
+              : colors.cardBackground,
           boxShadow: [
             BoxShadow(
               color: isSelected
                   ? (isDarkMode
                       ? Colors.white.withOpacity(0.3)
-                      : AppColors.lightGray400.withOpacity(0.4))
+                      : colors.gray400.withOpacity(0.4))
                   : (isDarkMode
                       ? Colors.transparent
-                      : AppColors.lightGray200.withOpacity(0.5)),
+                      : colors.gray200.withOpacity(0.5)),
               blurRadius: isSelected ? 10 : 8,
               offset: isSelected ? const Offset(0, 4) : const Offset(0, 2),
             ),
@@ -99,11 +95,9 @@ class _CategoryTab extends StatelessWidget {
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               color: isSelected
                   ? (isDarkMode
-                      ? AppColors.darkCardBackgroundAlt
+                      ? colors.cardBackgroundAlt
                       : Colors.white)
-                  : (isDarkMode
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary),
+                  : colors.textSecondary,
             ),
           ),
         ),
@@ -119,5 +113,3 @@ class _CategoryTab extends StatelessWidget {
         .fadeIn(duration: AppConstants.durationNormal.ms, delay: (index * 100).ms);
   }
 }
-
-

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import '../providers/theme_provider.dart';
 import '../providers/device_provider.dart';
+import '../providers/theme_provider.dart';
 import '../widgets/control_card.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
@@ -38,32 +38,31 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
     super.dispose();
   }
 
-  void _showDeviceInfo(BuildContext context, bool isDarkMode) {
+  void _showDeviceInfo(BuildContext context) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => _DeviceInfoPanel(isDarkMode: isDarkMode),
+      builder: (context) => const _DeviceInfoPanel(),
     );
   }
 
-  void _showDisconnectConfirmation(BuildContext context, bool isDarkMode) {
+  void _showDisconnectConfirmation(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => _DisconnectDialog(isDarkMode: isDarkMode),
+      builder: (context) => const _DisconnectDialog(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    final colors = context.colors; // Temadan renkleri al
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final deviceProvider = context.watch<DeviceProvider>();
     final purifierState = deviceProvider.purifierState;
 
     return Scaffold(
-      backgroundColor: isDarkMode
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -82,13 +81,12 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Header Bar
-                  _HeaderBar(isDarkMode: isDarkMode),
+                  const _HeaderBar(),
 
                   const SizedBox(height: AppConstants.spacing2Xl),
 
                   // Purifier Device Visualization (Parallax ile)
                   _PurifierVisualization(
-                    isDarkMode: isDarkMode,
                     rgbMode: purifierState.rgbMode,
                     isOn: purifierState.isOn,
                     fanSpeed: purifierState.fanSpeed,
@@ -108,7 +106,6 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                             icon: LucideIcons.fan,
                             value: purifierState.fanSpeed.toString(),
                             label: 'Speed',
-                            isDarkMode: isDarkMode,
                           ),
                         ),
                       ),
@@ -118,46 +115,50 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                       Expanded(
                         child: ControlCard(
                           onTap: () {},
-                          child: ControlCardContent(
-                            customIcon: SizedBox(
-                              width: AppConstants.iconSizeLarge,
-                              height: AppConstants.iconSizeLarge,
-                              child: Image.asset(
-                              'assets/images/evistal_logo.png',
-                              fit: BoxFit.contain,
-                              color: isDarkMode ? AppColors.darkSoftWhite : Colors.black,
-                              colorBlendMode: BlendMode.srcIn,
-                                errorBuilder: (context, error, stackTrace) {
-                                  // Eğer logo yüklenemezse "E" harfi göster
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          const Color(0xFF3B82F6),
-                                          const Color(0xFF1D4ED8),
-                                        ],
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'E',
-                                        style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                        color: AppColors.darkSoftWhite,
-                                      ),
-                                    ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            value: 'v2.1',
-                            label: 'EVISTAL',
-                            isDarkMode: isDarkMode,
+                          child: Builder(
+                            builder: (context) {
+                              final colors = context.colors;
+                              final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+                              return ControlCardContent(
+                                customIcon: SizedBox(
+                                  width: AppConstants.iconSizeLarge,
+                                  height: AppConstants.iconSizeLarge,
+                                  child: Image.asset(
+                                    'assets/images/evistal_logo.png',
+                                    fit: BoxFit.contain,
+                                    color: isDarkMode ? colors.textPrimary : Colors.black,
+                                    colorBlendMode: BlendMode.srcIn,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              const Color(0xFF3B82F6),
+                                              const Color(0xFF1D4ED8),
+                                            ],
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'E',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w900,
+                                              color: colors.textPrimary,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                value: 'v2.1',
+                                label: 'EVISTAL',
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -168,51 +169,49 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                         child: ControlCard(
                           onTap: () => deviceProvider.cycleRgbMode(),
                           isActive: true,
-                          child: ControlCardContent(
-                            customIcon: SizedBox(
-                              width: AppConstants.iconSizeLarge,
-                              height: AppConstants.iconSizeLarge,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: isDarkMode 
-                                      ? AppColors.darkActiveGradient 
-                                      : AppColors.lightActiveGradient,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: (isDarkMode 
-                                          ? AppColors.darkSoftWhite 
-                                          : AppColors.lightGray500).withOpacity(0.4),
-                                      blurRadius: 8,
-                                      spreadRadius: 1,
+                          child: Builder(
+                            builder: (context) {
+                              final colors = context.colors;
+                              return ControlCardContent(
+                                customIcon: SizedBox(
+                                  width: AppConstants.iconSizeLarge,
+                                  height: AppConstants.iconSizeLarge,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: colors.activeGradient,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: colors.textPrimary.withOpacity(0.4),
+                                          blurRadius: 8,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    purifierState.rgbMode.toString(),
-                                    style: TextStyle(
-                                      fontSize: AppConstants.fontSizeBody,
-                                      fontWeight: FontWeight.w700,
-                                      color: isDarkMode 
-                                          ? AppColors.darkTextPrimary 
-                                          : AppColors.lightTextPrimary,
+                                    child: Center(
+                                      child: Text(
+                                        purifierState.rgbMode.toString(),
+                                        style: TextStyle(
+                                          fontSize: AppConstants.fontSizeBody,
+                                          fontWeight: FontWeight.w700,
+                                          color: colors.textPrimary,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              )
-                                  .animate(
-                                    key: ValueKey(purifierState.rgbMode),
                                   )
-                                  .scale(
-                                    duration: AppConstants.durationNormal.ms,
-                                    begin: const Offset(0.8, 0.8),
-                                    curve: Curves.elasticOut,
-                                  ),
-                            ),
-                            value: 'Mode',
-                            label: 'RGB Light',
-                            isDarkMode: isDarkMode,
+                                      .animate(
+                                        key: ValueKey(purifierState.rgbMode),
+                                      )
+                                      .scale(
+                                        duration: AppConstants.durationNormal.ms,
+                                        begin: const Offset(0.8, 0.8),
+                                        curve: Curves.elasticOut,
+                                      ),
+                                ),
+                                value: 'Mode',
+                                label: 'RGB Light',
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -227,12 +226,11 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                       // Device Info
                       Expanded(
                         child: ControlCard(
-                          onTap: () => _showDeviceInfo(context, isDarkMode),
-                          child: ControlCardContent(
+                          onTap: () => _showDeviceInfo(context),
+                          child: const ControlCardContent(
                             icon: LucideIcons.info,
                             value: 'v2.1',
                             label: 'Info',
-                            isDarkMode: isDarkMode,
                           ),
                         ),
                       ),
@@ -247,7 +245,6 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                             icon: isDarkMode ? LucideIcons.moon : LucideIcons.sun,
                             value: isDarkMode ? 'ON' : 'OFF',
                             label: 'Night mode',
-                            isDarkMode: isDarkMode,
                           ),
                         ),
                       ),
@@ -256,14 +253,13 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                       // Disconnect
                       Expanded(
                         child: ControlCard(
-                          onTap: () => _showDisconnectConfirmation(context, isDarkMode),
+                          onTap: () => _showDisconnectConfirmation(context),
                           activeBackgroundColor: const Color(0xFFEF4444).withOpacity(0.15),
                           activeShadowColor: const Color(0xFFEF4444),
-                          child: ControlCardContent(
+                          child: const ControlCardContent(
                             icon: LucideIcons.powerOff,
                             value: 'BLE',
                             label: 'Disconnect',
-                            isDarkMode: isDarkMode,
                           ),
                         ),
                       ),
@@ -281,12 +277,12 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
 
 /// Header Bar - Üst kısım
 class _HeaderBar extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _HeaderBar({required this.isDarkMode});
+  const _HeaderBar();
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Row(
       children: [
         // Title
@@ -295,9 +291,7 @@ class _HeaderBar extends StatelessWidget {
           style: TextStyle(
             fontSize: AppConstants.fontSizeTitle,
             fontWeight: FontWeight.w600,
-            color: isDarkMode
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            color: colors.textPrimary,
           ),
         )
             .animate()
@@ -310,14 +304,12 @@ class _HeaderBar extends StatelessWidget {
 
 /// Purifier Görselleştirme - Animasyonlu RGB Modları
 class _PurifierVisualization extends StatefulWidget {
-  final bool isDarkMode;
   final int rgbMode;
   final bool isOn;
   final int fanSpeed;
   final double scrollOffset;
 
   const _PurifierVisualization({
-    required this.isDarkMode,
     required this.rgbMode,
     required this.isOn,
     required this.fanSpeed,
@@ -782,7 +774,8 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
   }
 
   /// Çift piramit oluştur (düz yüzeyler - yumuşak köşeler)
-  Widget _buildDoublePyramid(bool isDarkMode) {
+  Widget _buildDoublePyramid(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return CustomPaint(
       size: const Size(200, 200),
       painter: _DoublePyramidPainter(
@@ -952,7 +945,7 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                     alignment: Alignment.center,
                     children: [
                         // Çift Piramit - Floating Animasyonlu (yukarı/aşağı)
-                        _buildDoublePyramid(widget.isDarkMode)
+                        _buildDoublePyramid(context)
                             .animate(
                               onPlay: (controller) => controller.repeat(),
                             )
@@ -969,9 +962,9 @@ class _PurifierVisualizationState extends State<_PurifierVisualization>
                               end: -8,
                               curve: Curves.easeInOut,
                             ),
-                      ],
-                    ),
-                  ),
+                                  ],
+                          ),
+                        ),
                 ],
               )
                   .animate()
@@ -1000,6 +993,15 @@ class _DoublePyramidPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final centerX = size.width / 2;
     final centerY = size.height / 2;
+
+    // Renk tanımları (dark/light mode için)
+    final gray700 = isDarkMode ? const Color(0xFF374151) : const Color(0xFF374151);
+    final gray600 = isDarkMode ? const Color(0xFF4B5563) : const Color(0xFF4B5563);
+    final gray500 = isDarkMode ? const Color(0xFF6B7280) : const Color(0xFF6B7280);
+    final gray400 = isDarkMode ? const Color(0xFF9CA3AF) : const Color(0xFF9CA3AF);
+    final gray300 = isDarkMode ? const Color(0xFFD1D5DB) : const Color(0xFFD1D5DB);
+    final gray200 = isDarkMode ? const Color(0xFFE5E7EB) : const Color(0xFFE5E7EB);
+    final cardBg = isDarkMode ? const Color(0xFF1F2937) : const Color(0xFFFFFFFF);
 
     // ============================================================================
     // ÜST PİRAMİT (Ters) - 3D Gradient ile + Yumuşak Köşeler
@@ -1031,16 +1033,8 @@ class _DoublePyramidPainter extends CustomPainter {
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
         colors: isDarkMode
-            ? [
-                AppColors.darkGray700,
-                AppColors.darkGray600,
-                AppColors.darkCardBackground,
-              ]
-            : [
-                AppColors.lightGray300,
-                AppColors.lightGray200,
-                const Color(0xFFF5F5F5),
-              ],
+            ? [gray700, gray600, cardBg]
+            : [gray300, gray200, const Color(0xFFF5F5F5)],
       ).createShader(Rect.fromLTWH(centerX - 80, 10, 160, centerY - 10));
 
     canvas.drawPath(topPyramidPath, topGradientPaint);
@@ -1069,9 +1063,7 @@ class _DoublePyramidPainter extends CustomPainter {
     // Border (ince ve smooth)
     final topBorderPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..color = isDarkMode 
-          ? AppColors.darkGray700.withOpacity(0.8)
-          : AppColors.lightGray400.withOpacity(0.6)
+      ..color = (isDarkMode ? gray700 : gray400).withOpacity(isDarkMode ? 0.8 : 0.6)
       ..strokeWidth = 1.0;
     canvas.drawPath(topPyramidPath, topBorderPaint);
 
@@ -1105,16 +1097,8 @@ class _DoublePyramidPainter extends CustomPainter {
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
         colors: isDarkMode
-            ? [
-                AppColors.darkGray700,
-                AppColors.darkGray600,
-                AppColors.darkCardBackground,
-              ]
-            : [
-                AppColors.lightGray400,
-                AppColors.lightGray300,
-                AppColors.lightGray200,
-              ],
+            ? [gray700, gray600, cardBg]
+            : [gray400, gray300, gray200],
       ).createShader(Rect.fromLTWH(
           centerX - 90, centerY, 180, size.height - centerY - 10));
 
@@ -1141,9 +1125,7 @@ class _DoublePyramidPainter extends CustomPainter {
     // Border (ince ve smooth)
     final bottomBorderPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..color = isDarkMode 
-          ? AppColors.darkGray700.withOpacity(0.8)
-          : AppColors.lightGray500.withOpacity(0.6)
+      ..color = (isDarkMode ? gray700 : gray500).withOpacity(isDarkMode ? 0.8 : 0.6)
       ..strokeWidth = 1.0;
     canvas.drawPath(bottomPyramidPath, bottomBorderPaint);
 
@@ -1153,9 +1135,7 @@ class _DoublePyramidPainter extends CustomPainter {
     
     final centerLinePaint = Paint()
       ..style = PaintingStyle.stroke
-      ..color = isDarkMode
-          ? AppColors.darkGray700.withOpacity(0.5)
-          : AppColors.lightGray500.withOpacity(0.4)
+      ..color = (isDarkMode ? gray700 : gray500).withOpacity(isDarkMode ? 0.5 : 0.4)
       ..strokeWidth = 1.5;
     
     canvas.drawLine(
@@ -1182,9 +1162,7 @@ class _DoublePyramidPainter extends CustomPainter {
     
     final layerLinePaint = Paint()
       ..style = PaintingStyle.stroke
-      ..color = isDarkMode
-          ? AppColors.darkGray700.withOpacity(0.6)
-          : AppColors.lightGray400.withOpacity(0.5)
+      ..color = (isDarkMode ? gray700 : gray400).withOpacity(isDarkMode ? 0.6 : 0.5)
       ..strokeWidth = 1.0;
 
     final layerHighlightPaint = Paint()
@@ -1241,21 +1219,20 @@ class _DoublePyramidPainter extends CustomPainter {
 
 /// Device Info Panel - Cihaz bilgilerini gösteren estetik panel
 class _DeviceInfoPanel extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _DeviceInfoPanel({required this.isDarkMode});
+  const _DeviceInfoPanel();
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: const EdgeInsets.all(AppConstants.radiusXl),
-      decoration: BoxDecoration(
+                            decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppConstants.radiusXl * 1.5),
-                            color: isDarkMode
-            ? AppColors.darkCardBackgroundAlt
-            : Colors.white,
-        boxShadow: [
-          BoxShadow(
+        color: colors.cardBackgroundAlt,
+                              boxShadow: [
+                                BoxShadow(
             color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.2),
             blurRadius: 30,
             offset: const Offset(0, 10),
@@ -1274,9 +1251,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                 topLeft: Radius.circular(AppConstants.radiusXl * 1.5),
                 topRight: Radius.circular(AppConstants.radiusXl * 1.5),
               ),
-              gradient: isDarkMode 
-                  ? AppColors.primaryDarkGradient 
-                  : AppColors.primaryLightGradient,
+              gradient: colors.primaryGradient,
             ),
             child: Row(
               children: [
@@ -1285,15 +1260,15 @@ class _DeviceInfoPanel extends StatelessWidget {
                   height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.darkSoftWhite.withOpacity(0.2),
+                    color: colors.textPrimary.withOpacity(0.2),
                     border: Border.all(
-                      color: AppColors.darkSoftWhite.withOpacity(0.5),
+                      color: colors.textPrimary.withOpacity(0.5),
                       width: 2,
                     ),
                   ),
                   child: Icon(
                     LucideIcons.info,
-                    color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+                    color: isDarkMode ? colors.textPrimary : Colors.white,
                     size: 32,
                   ),
                 )
@@ -1310,7 +1285,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                         style: TextStyle(
                           fontSize: AppConstants.fontSizeTitle,
                           fontWeight: FontWeight.w700,
-                          color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+                          color: isDarkMode ? colors.textPrimary : Colors.white,
                         ),
                       )
                           .animate()
@@ -1321,7 +1296,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                         'EVISTAL Smart Humidifier',
                         style: TextStyle(
                           fontSize: AppConstants.fontSizeSubheadline,
-                          color: (isDarkMode ? AppColors.darkSoftWhite : Colors.white).withOpacity(0.9),
+                          color: (isDarkMode ? colors.textPrimary : Colors.white).withOpacity(0.9),
                         ),
                       )
                           .animate()
@@ -1337,11 +1312,11 @@ class _DeviceInfoPanel extends StatelessWidget {
                     height: 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: (isDarkMode ? AppColors.darkSoftWhite : Colors.white).withOpacity(0.2),
+                      color: (isDarkMode ? colors.textPrimary : Colors.white).withOpacity(0.2),
                     ),
-                    child: Icon(
+                          child: Icon(
                       LucideIcons.x,
-                      color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+                      color: isDarkMode ? colors.textPrimary : Colors.white,
                       size: 20,
                     ),
                   ),
@@ -1360,33 +1335,30 @@ class _DeviceInfoPanel extends StatelessWidget {
               children: [
                 // VERSION
                 _buildInfoItem(
+                  context: context,
                   icon: LucideIcons.tag,
                   label: 'VERSION',
                   value: 'v2.1.0',
-                  color: isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight,
-                  isDarkMode: isDarkMode,
                   delay: 200,
                 ),
                 const SizedBox(height: AppConstants.radiusMd),
 
                 // ID
                 _buildInfoItem(
+                  context: context,
                   icon: LucideIcons.hash,
                   label: 'ID',
                   value: 'EV-2024-A1F2B3',
-                  color: isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight,
-                  isDarkMode: isDarkMode,
                   delay: 300,
                 ),
                 const SizedBox(height: AppConstants.radiusMd),
 
                 // NAME
                 _buildInfoItem(
+                  context: context,
                   icon: LucideIcons.type,
                   label: 'NAME',
                   value: 'EVISTAL\'s Humidifier',
-                  color: isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight,
-                  isDarkMode: isDarkMode,
                   delay: 400,
                 ),
               ],
@@ -1394,15 +1366,13 @@ class _DeviceInfoPanel extends StatelessWidget {
           ),
 
           // Footer
-          Container(
+              Container(
             padding: const EdgeInsets.all(AppConstants.radiusMd),
             child: Text(
               'Powered by EVISTAL Technology',
               style: TextStyle(
                 fontSize: AppConstants.fontSizeCaption,
-                color: isDarkMode
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: colors.textSecondary,
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -1418,20 +1388,21 @@ class _DeviceInfoPanel extends StatelessWidget {
   }
 
   Widget _buildInfoItem({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required String value,
-    required Color color,
-    required bool isDarkMode,
     required int delay,
   }) {
+    final colors = context.colors;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final color = colors.textPrimary;
+    
     return Container(
       padding: const EdgeInsets.all(AppConstants.radiusMd),
-      decoration: BoxDecoration(
+                decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppConstants.radiusMd),
-        color: isDarkMode
-            ? AppColors.darkCardBackground
-            : AppColors.lightGray100,
+        color: colors.cardBackground,
         border: Border.all(
           color: color.withOpacity(0.3),
           width: 1.5,
@@ -1445,25 +1416,17 @@ class _DeviceInfoPanel extends StatelessWidget {
             height: 48,
                 decoration: BoxDecoration(
               shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  color.withOpacity(0.8),
-                  color,
-                ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                  color: color.withOpacity(0.4),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              color: isDarkMode ? colors.cardBackgroundAlt : colors.gray200,
+              border: isDarkMode
+                  ? Border.all(
+                      color: Colors.black,
+                      width: 2.0,
+                    )
+                  : null,
             ),
             child: Icon(
               icon,
-              color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+              color: colors.textPrimary,
               size: 24,
             ),
           ),
@@ -1489,9 +1452,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                   style: TextStyle(
                     fontSize: AppConstants.fontSizeBody,
                     fontWeight: FontWeight.w700,
-                      color: isDarkMode
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    color: colors.textPrimary,
                   ),
                     ),
                   ],
@@ -1499,10 +1460,10 @@ class _DeviceInfoPanel extends StatelessWidget {
               ),
 
           // Copy Icon
-          Container(
+              Container(
             width: 36,
             height: 36,
-            decoration: BoxDecoration(
+                decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: color.withOpacity(0.1),
             ),
@@ -1510,9 +1471,9 @@ class _DeviceInfoPanel extends StatelessWidget {
               LucideIcons.copy,
               color: color,
               size: 18,
-            ),
-          ),
-        ],
+                ),
+              ),
+            ],
       ),
           )
               .animate()
@@ -1523,21 +1484,20 @@ class _DeviceInfoPanel extends StatelessWidget {
 
 /// Disconnect Confirmation Dialog - Bağlantı kesme onay dialog'u
 class _DisconnectDialog extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _DisconnectDialog({required this.isDarkMode});
+  const _DisconnectDialog();
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
         padding: const EdgeInsets.all(AppConstants.spacing2Xl),
             decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppConstants.radiusXl * 1.5),
-              color: isDarkMode
-                  ? AppColors.darkCardBackgroundAlt
-              : Colors.white,
+          color: colors.cardBackgroundAlt,
               boxShadow: [
                 BoxShadow(
               color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.2),
@@ -1549,13 +1509,13 @@ class _DisconnectDialog extends StatelessWidget {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+      children: [
             // Icon
             Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -1564,17 +1524,17 @@ class _DisconnectDialog extends StatelessWidget {
                     Color(0xFFDC2626),
                   ],
                 ),
-                boxShadow: [
-                  BoxShadow(
+              boxShadow: [
+                BoxShadow(
                     color: const Color(0xFFEF4444).withOpacity(0.4),
                     blurRadius: 20,
                     spreadRadius: 5,
-                  ),
-                ],
-              ),
-              child: Icon(
+                ),
+              ],
+            ),
+            child: Icon(
                 LucideIcons.powerOff,
-                color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+                color: isDarkMode ? colors.textPrimary : Colors.white,
                 size: 40,
               ),
             )
@@ -1590,9 +1550,7 @@ class _DisconnectDialog extends StatelessWidget {
               style: TextStyle(
                 fontSize: AppConstants.fontSizeTitle,
                 fontWeight: FontWeight.w700,
-                color: isDarkMode
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: colors.textPrimary,
               ),
               textAlign: TextAlign.center,
             )
@@ -1607,9 +1565,7 @@ class _DisconnectDialog extends StatelessWidget {
               'Are you sure you want to disconnect from EVISTAL\'s Humidifier?',
           style: TextStyle(
                 fontSize: AppConstants.fontSizeBody,
-            color: isDarkMode
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
+            color: colors.textSecondary,
           ),
               textAlign: TextAlign.center,
             )
@@ -1632,19 +1588,15 @@ class _DisconnectDialog extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(AppConstants.radiusMd),
-          color: isDarkMode
-                            ? AppColors.darkCardBackground
-                            : AppColors.lightGray200,
+                        color: isDarkMode ? colors.cardBackground : colors.gray200,
                       ),
                       child: Text(
                         'Cancel',
                         style: TextStyle(
                           fontSize: AppConstants.fontSizeBody,
                           fontWeight: FontWeight.w600,
-          color: isDarkMode
-              ? AppColors.darkTextPrimary
-              : AppColors.lightTextPrimary,
-        ),
+                          color: colors.textPrimary,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -1692,7 +1644,7 @@ class _DisconnectDialog extends StatelessWidget {
                         style: TextStyle(
                         fontSize: AppConstants.fontSizeBody,
                         fontWeight: FontWeight.w700,
-                        color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+                        color: isDarkMode ? colors.textPrimary : Colors.white,
                       ),
                       textAlign: TextAlign.center,
                       ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
 
@@ -24,7 +22,8 @@ class ControlCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    final colors = context.colors; // Temadan renkleri al
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: onTap,
@@ -39,9 +38,7 @@ class ControlCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppConstants.radiusXl),
             color: isActive && activeBackgroundColor != null
                 ? activeBackgroundColor
-                : (isDarkMode
-                    ? AppColors.darkCardBackgroundAlt
-                    : AppColors.lightGray100),
+                : colors.cardBackgroundAlt,
             boxShadow: [
               // Outer shadow
               BoxShadow(
@@ -76,7 +73,6 @@ class ControlCardContent extends StatelessWidget {
   final IconData? icon;
   final String? value;
   final String label;
-  final bool isDarkMode;
   final Widget? customIcon;
 
   const ControlCardContent({
@@ -84,12 +80,13 @@ class ControlCardContent extends StatelessWidget {
     this.icon,
     this.value,
     required this.label,
-    required this.isDarkMode,
     this.customIcon,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors; // Temadan renkleri al
+    
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -103,9 +100,7 @@ class ControlCardContent extends StatelessWidget {
             child: Icon(
               icon,
               size: AppConstants.iconSizeLarge,
-              color: isDarkMode
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: colors.textPrimary,
             ),
           ),
 
@@ -119,9 +114,7 @@ class ControlCardContent extends StatelessWidget {
             style: TextStyle(
               fontSize: AppConstants.fontSizeBody,
               fontWeight: FontWeight.w600,
-              color: isDarkMode
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: colors.textPrimary,
             ),
           ),
           const SizedBox(height: AppConstants.spacingSm),
@@ -132,9 +125,7 @@ class ControlCardContent extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: AppConstants.fontSizeSubheadline,
-            color: isDarkMode
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
+            color: colors.textSecondary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -142,4 +133,3 @@ class ControlCardContent extends StatelessWidget {
     );
   }
 }
-

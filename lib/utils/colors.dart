@@ -1,67 +1,276 @@
 import 'package:flutter/material.dart';
 
 /// EVISTAL App Color System
-/// Spesifikasyona göre tüm renkler burada tanımlanmıştır
+/// ThemeExtension kullanarak merkezi tema yönetimi
+/// Dark ve Light mode renkleri otomatik olarak yönetilir
+
+class AppColorScheme extends ThemeExtension<AppColorScheme> {
+  // ============================================================================
+  // THEME COLORS (Otomatik dark/light değişimi)
+  // ============================================================================
+  
+  final Color background;
+  final Color cardBackground;
+  final Color cardBackgroundAlt;
+  
+  final Color textPrimary;
+  final Color textSecondary;
+  final Color textTertiary;
+  
+  final Color border;
+  
+  final Color iconActive;
+  final Color iconInactive;
+  
+  final Color primary;
+  final Color primaryAccent;
+  final Color primaryLight;
+  
+  final LinearGradient primaryGradient;
+  final LinearGradient activeGradient;
+  
+  // Additional grays for flexibility
+  final Color gray100;
+  final Color gray200;
+  final Color gray300;
+  final Color gray400;
+  final Color gray500;
+  final Color gray600;
+  final Color gray700;
+  
+  const AppColorScheme({
+    required this.background,
+    required this.cardBackground,
+    required this.cardBackgroundAlt,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.textTertiary,
+    required this.border,
+    required this.iconActive,
+    required this.iconInactive,
+    required this.primary,
+    required this.primaryAccent,
+    required this.primaryLight,
+    required this.primaryGradient,
+    required this.activeGradient,
+    required this.gray100,
+    required this.gray200,
+    required this.gray300,
+    required this.gray400,
+    required this.gray500,
+    required this.gray600,
+    required this.gray700,
+  });
+  
+  // ============================================================================
+  // DARK MODE THEME
+  // ============================================================================
+  
+  static const AppColorScheme dark = AppColorScheme(
+    // Backgrounds
+    background: Color(0xFF000000), // Pure Black
+    cardBackground: Color(0xFF1F2937), // gray-800
+    cardBackgroundAlt: Color(0xFF111827), // gray-900
+    
+    // Text Colors (Soft White)
+    textPrimary: Color(0xFFE5E7EB), // gray-200 - Soft matte white
+    textSecondary: Color(0xFF9CA3AF), // gray-400
+    textTertiary: Color(0xFF6B7280), // gray-500
+    
+    // Border
+    border: Color(0xFF1F2937), // gray-800
+    
+    // Icons
+    iconActive: Color(0xFFE5E7EB), // Soft White
+    iconInactive: Color(0xFF9CA3AF), // gray-400
+    
+    // Primary Colors (Monochrome: Black & White)
+    primary: Color(0xFF000000), // Black
+    primaryAccent: Color(0xFF1F1F1F), // Dark Gray
+    primaryLight: Color(0xFFFFFFFF), // White
+    
+    // Primary Gradient (Black to Dark Gray)
+    primaryGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xFF1F1F1F), // Dark Gray
+        Color(0xFF000000), // Black
+      ],
+    ),
+    
+    // Active Gradient (Soft White shades)
+    activeGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xFFE5E7EB), // Soft White (gray-200)
+        Color(0xFFD1D5DB), // gray-300
+        Color(0xFFBFC3C7), // gray-350 (custom)
+      ],
+    ),
+    
+    // Additional Grays
+    gray100: Color(0xFFF3F4F6),
+    gray200: Color(0xFFE5E7EB),
+    gray300: Color(0xFFD1D5DB),
+    gray400: Color(0xFF9CA3AF),
+    gray500: Color(0xFF6B7280),
+    gray600: Color(0xFF4B5563),
+    gray700: Color(0xFF374151),
+  );
+  
+  // ============================================================================
+  // LIGHT MODE THEME
+  // ============================================================================
+  
+  static const AppColorScheme light = AppColorScheme(
+    // Backgrounds
+    background: Color(0xFFF9FAFB), // gray-50
+    cardBackground: Color(0xFFFFFFFF), // White
+    cardBackgroundAlt: Color(0xFFF3F4F6), // gray-100
+    
+    // Text Colors
+    textPrimary: Color(0xFF1F2937), // gray-800
+    textSecondary: Color(0xFF4B5563), // gray-600
+    textTertiary: Color(0xFF6B7280), // gray-500
+    
+    // Border
+    border: Color(0xFFE5E7EB), // gray-200
+    
+    // Icons
+    iconActive: Color(0xFF6B7280), // gray-600
+    iconInactive: Color(0xFF9CA3AF), // gray-400
+    
+    // Primary Colors (Monochrome: Gray & White)
+    primary: Color(0xFF6B7280), // gray-500
+    primaryAccent: Color(0xFF9CA3AF), // gray-400
+    primaryLight: Color(0xFF4B5563), // gray-600
+    
+    // Primary Gradient (Gray shades)
+    primaryGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xFF6B7280), // gray-500
+        Color(0xFF4B5563), // gray-600
+      ],
+    ),
+    
+    // Active Gradient (Gray shades)
+    activeGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xFFD1D5DB), // gray-300
+        Color(0xFF9CA3AF), // gray-400
+        Color(0xFF6B7280), // gray-500
+      ],
+    ),
+    
+    // Additional Grays
+    gray100: Color(0xFFF3F4F6),
+    gray200: Color(0xFFE5E7EB),
+    gray300: Color(0xFFD1D5DB),
+    gray400: Color(0xFF9CA3AF),
+    gray500: Color(0xFF6B7280),
+    gray600: Color(0xFF4B5563),
+    gray700: Color(0xFF374151),
+  );
+  
+  // ============================================================================
+  // THEME EXTENSION METHODS (Required by Flutter)
+  // ============================================================================
+  
+  @override
+  ThemeExtension<AppColorScheme> copyWith({
+    Color? background,
+    Color? cardBackground,
+    Color? cardBackgroundAlt,
+    Color? textPrimary,
+    Color? textSecondary,
+    Color? textTertiary,
+    Color? border,
+    Color? iconActive,
+    Color? iconInactive,
+    Color? primary,
+    Color? primaryAccent,
+    Color? primaryLight,
+    LinearGradient? primaryGradient,
+    LinearGradient? activeGradient,
+    Color? gray100,
+    Color? gray200,
+    Color? gray300,
+    Color? gray400,
+    Color? gray500,
+    Color? gray600,
+    Color? gray700,
+  }) {
+    return AppColorScheme(
+      background: background ?? this.background,
+      cardBackground: cardBackground ?? this.cardBackground,
+      cardBackgroundAlt: cardBackgroundAlt ?? this.cardBackgroundAlt,
+      textPrimary: textPrimary ?? this.textPrimary,
+      textSecondary: textSecondary ?? this.textSecondary,
+      textTertiary: textTertiary ?? this.textTertiary,
+      border: border ?? this.border,
+      iconActive: iconActive ?? this.iconActive,
+      iconInactive: iconInactive ?? this.iconInactive,
+      primary: primary ?? this.primary,
+      primaryAccent: primaryAccent ?? this.primaryAccent,
+      primaryLight: primaryLight ?? this.primaryLight,
+      primaryGradient: primaryGradient ?? this.primaryGradient,
+      activeGradient: activeGradient ?? this.activeGradient,
+      gray100: gray100 ?? this.gray100,
+      gray200: gray200 ?? this.gray200,
+      gray300: gray300 ?? this.gray300,
+      gray400: gray400 ?? this.gray400,
+      gray500: gray500 ?? this.gray500,
+      gray600: gray600 ?? this.gray600,
+      gray700: gray700 ?? this.gray700,
+    );
+  }
+  
+  @override
+  ThemeExtension<AppColorScheme> lerp(
+    ThemeExtension<AppColorScheme>? other,
+    double t,
+  ) {
+    if (other is! AppColorScheme) return this;
+    
+    return AppColorScheme(
+      background: Color.lerp(background, other.background, t)!,
+      cardBackground: Color.lerp(cardBackground, other.cardBackground, t)!,
+      cardBackgroundAlt: Color.lerp(cardBackgroundAlt, other.cardBackgroundAlt, t)!,
+      textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
+      textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
+      textTertiary: Color.lerp(textTertiary, other.textTertiary, t)!,
+      border: Color.lerp(border, other.border, t)!,
+      iconActive: Color.lerp(iconActive, other.iconActive, t)!,
+      iconInactive: Color.lerp(iconInactive, other.iconInactive, t)!,
+      primary: Color.lerp(primary, other.primary, t)!,
+      primaryAccent: Color.lerp(primaryAccent, other.primaryAccent, t)!,
+      primaryLight: Color.lerp(primaryLight, other.primaryLight, t)!,
+      primaryGradient: LinearGradient.lerp(primaryGradient, other.primaryGradient, t)!,
+      activeGradient: LinearGradient.lerp(activeGradient, other.activeGradient, t)!,
+      gray100: Color.lerp(gray100, other.gray100, t)!,
+      gray200: Color.lerp(gray200, other.gray200, t)!,
+      gray300: Color.lerp(gray300, other.gray300, t)!,
+      gray400: Color.lerp(gray400, other.gray400, t)!,
+      gray500: Color.lerp(gray500, other.gray500, t)!,
+      gray600: Color.lerp(gray600, other.gray600, t)!,
+      gray700: Color.lerp(gray700, other.gray700, t)!,
+    );
+  }
+}
+
+// ============================================================================
+// HELPER CLASS (Static değerler - RGB Mode & Special)
+// ============================================================================
 
 class AppColors {
   // ============================================================================
-  // DARK MODE COLORS
-  // ============================================================================
-  
-  // Backgrounds
-  static const Color darkBackground = Color(0xFF000000); // Pure Black
-  static const Color darkCardBackground = Color(0xFF1F2937); // gray-800
-  static const Color darkCardBackgroundAlt = Color(0xFF111827); // gray-900
-  
-  // Soft White (for dark mode - less harsh than pure white)
-  static const Color darkSoftWhite = Color(0xFFE5E7EB); // gray-200 - Soft matte white
-  
-  // Text Colors
-  static const Color darkTextPrimary = Color(0xFFE5E7EB); // Soft White (was pure white)
-  static const Color darkTextSecondary = Color(0xFF9CA3AF); // gray-400
-  static const Color darkTextTertiary = Color(0xFF6B7280); // gray-500
-  
-  // Border
-  static const Color darkBorder = Color(0xFF1F2937); // gray-800
-  
-  // Inactive Icons
-  static const Color darkIconInactive = Color(0xFF9CA3AF); // gray-400
-  static const Color darkIconActive = Color(0xFFE5E7EB); // Soft White (was pure white)
-  
-  // Additional Dark Colors
-  static const Color darkGray700 = Color(0xFF374151);
-  static const Color darkGray600 = Color(0xFF4B5563);
-  
-  // ============================================================================
-  // LIGHT MODE COLORS
-  // ============================================================================
-  
-  // Backgrounds
-  static const Color lightBackground = Color(0xFFF9FAFB); // gray-50
-  static const Color lightCardBackground = Color(0xFFFFFFFF); // White
-  static const Color lightCardBackgroundAlt = Color(0xFFF3F4F6); // gray-100
-  
-  // Text Colors
-  static const Color lightTextPrimary = Color(0xFF1F2937); // gray-800
-  static const Color lightTextSecondary = Color(0xFF4B5563); // gray-600
-  static const Color lightTextTertiary = Color(0xFF6B7280); // gray-500
-  
-  // Border
-  static const Color lightBorder = Color(0xFFE5E7EB); // gray-200
-  
-  // Icons
-  static const Color lightIconActive = Color(0xFF6B7280); // gray-600
-  static const Color lightIconInactive = Color(0xFF9CA3AF); // gray-400
-  
-  // Additional Light Colors
-  static const Color lightGray100 = Color(0xFFF3F4F6);
-  static const Color lightGray200 = Color(0xFFE5E7EB);
-  static const Color lightGray300 = Color(0xFFD1D5DB);
-  static const Color lightGray400 = Color(0xFF9CA3AF);
-  static const Color lightGray500 = Color(0xFF6B7280);
-  
-  // ============================================================================
-  // RGB MODE COLORS (For Purifier Control)
+  // RGB MODE COLORS (Humidifier smoke - exception to monochrome)
   // ============================================================================
   
   // Mode 0 - Gri Duman
@@ -92,66 +301,6 @@ class AppColors {
   static const Color rgbMode3Start = Color(0xFFFFFFFF); // White
   static const Color rgbMode3End = Color(0xFFF3F4F6); // gray-100
   static const Color rgbMode3Light = Color(0xFFFFFFFF);
-  
-  // ============================================================================
-  // PRIMARY THEME (Monochrome - No Blue Colors)
-  // ============================================================================
-  
-  // Dark Mode: Black & White only
-  static const Color primaryDark = Color(0xFF000000); // Black
-  static const Color primaryDarkAccent = Color(0xFF1F1F1F); // Dark Gray
-  static const Color primaryDarkLight = Color(0xFFFFFFFF); // White
-  
-  // Light Mode: Gray & White only
-  static const Color primaryLight = Color(0xFF6B7280); // gray-500
-  static const Color primaryLightDark = Color(0xFF4B5563); // gray-600
-  static const Color primaryLightAccent = Color(0xFF9CA3AF); // gray-400
-  
-  // Dark Mode Primary Gradient (Black to Dark Gray)
-  static const LinearGradient primaryDarkGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFF1F1F1F), // Dark Gray
-      Color(0xFF000000), // Black
-    ],
-  );
-  
-  // Light Mode Primary Gradient (Gray shades)
-  static const LinearGradient primaryLightGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFF6B7280), // gray-500
-      Color(0xFF4B5563), // gray-600
-    ],
-  );
-  
-  // ============================================================================
-  // ACTIVE ELEMENT GRADIENTS
-  // ============================================================================
-  
-  // Dark Mode Active Gradient (Soft White to gray-200)
-  static const LinearGradient darkActiveGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFFE5E7EB), // Soft White (gray-200)
-      Color(0xFFD1D5DB), // gray-300
-      Color(0xFFBFC3C7), // gray-350 (in between)
-    ],
-  );
-  
-  // Light Mode Active Gradient (gray-300 to gray-500)
-  static const LinearGradient lightActiveGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFFD1D5DB), // gray-300
-      Color(0xFF9CA3AF), // gray-400
-      Color(0xFF6B7280), // gray-500
-    ],
-  );
   
   // ============================================================================
   // RGB MODE GRADIENTS
@@ -198,21 +347,17 @@ class AppColors {
   }
   
   // ============================================================================
-  // SPECIAL COLORS
+  // SPECIAL COLORS (Disconnect panel - exception to monochrome)
   // ============================================================================
   
-  // REMOVED - Now using monochrome theme
-  // static const Color themeIconSun = Color(0xFFFBBF24); // yellow-400
-  
-  // Mode Active Background Colors (Dark Mode)
-  static const Color autoModeBgDark = Color(0x4D083344); // #083344 with 30% opacity
-  static const Color nightModeBgDark = Color(0x4D312E81); // #312E81 with 30% opacity
-  static const Color airFlowBgDark = Color(0x4D1E3A8A); // #1E3A8A with 30% opacity
-  
-  // Mode Active Background Colors (Light Mode)
-  static const Color autoModeBgLight = Color(0xFFCFFAFE); // cyan-100
-  static const Color nightModeBgLight = Color(0xFFE0E7FF); // indigo-100
-  static const Color airFlowBgLight = Color(0xFFDBEAFE); // blue-100
+  static const Color disconnectRed = Color(0xFFEF4444); // red-500
+  static const Color disconnectRedLight = Color(0xFFFEE2E2); // red-50
 }
 
+// ============================================================================
+// THEME EXTENSION HELPER (Easy access)
+// ============================================================================
 
+extension ThemeGetter on BuildContext {
+  AppColorScheme get colors => Theme.of(this).extension<AppColorScheme>()!;
+}

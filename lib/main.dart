@@ -63,46 +63,53 @@ class EvistalApp extends StatelessWidget {
 
   /// Light Tema
   ThemeData _buildLightTheme() {
+    const colorScheme = AppColorScheme.light;
+    
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColors.lightBackground,
+      scaffoldBackgroundColor: colorScheme.background,
+      
+      // Custom Color Extension (Merkezi tema sistemi)
+      extensions: const <ThemeExtension<dynamic>>[
+        AppColorScheme.light,
+      ],
       
       // Renk Şeması
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.lightTextPrimary,
-        secondary: AppColors.lightTextSecondary,
-        surface: AppColors.lightCardBackground,
+      colorScheme: ColorScheme.light(
+        primary: colorScheme.textPrimary,
+        secondary: colorScheme.textSecondary,
+        surface: colorScheme.cardBackground,
         error: Colors.red,
       ),
       
       // Metin Teması
-      textTheme: const TextTheme(
+      textTheme: TextTheme(
         displayLarge: TextStyle(
           fontSize: AppConstants.fontSizeExtraLarge,
           fontWeight: FontWeight.w700,
-          color: AppColors.lightTextPrimary,
+          color: colorScheme.textPrimary,
         ),
         titleLarge: TextStyle(
           fontSize: AppConstants.fontSizeTitle,
           fontWeight: FontWeight.w500,
-          color: AppColors.lightTextPrimary,
+          color: colorScheme.textPrimary,
         ),
         bodyLarge: TextStyle(
           fontSize: AppConstants.fontSizeBody,
           fontWeight: FontWeight.w400,
-          color: AppColors.lightTextPrimary,
+          color: colorScheme.textPrimary,
         ),
         bodyMedium: TextStyle(
           fontSize: AppConstants.fontSizeSubheadline,
           fontWeight: FontWeight.w400,
-          color: AppColors.lightTextSecondary,
+          color: colorScheme.textSecondary,
         ),
       ),
       
       // Icon Teması
-      iconTheme: const IconThemeData(
-        color: AppColors.lightIconActive,
+      iconTheme: IconThemeData(
+        color: colorScheme.iconActive,
         size: AppConstants.iconSizeMedium,
       ),
       
@@ -118,46 +125,53 @@ class EvistalApp extends StatelessWidget {
 
   /// Dark Tema
   ThemeData _buildDarkTheme() {
+    const colorScheme = AppColorScheme.dark;
+    
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.darkBackground,
+      scaffoldBackgroundColor: colorScheme.background,
+      
+      // Custom Color Extension (Merkezi tema sistemi)
+      extensions: const <ThemeExtension<dynamic>>[
+        AppColorScheme.dark,
+      ],
       
       // Renk Şeması
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.darkTextPrimary,
-        secondary: AppColors.darkTextSecondary,
-        surface: AppColors.darkCardBackground,
+      colorScheme: ColorScheme.dark(
+        primary: colorScheme.textPrimary,
+        secondary: colorScheme.textSecondary,
+        surface: colorScheme.cardBackground,
         error: Colors.red,
       ),
       
       // Metin Teması
-      textTheme: const TextTheme(
+      textTheme: TextTheme(
         displayLarge: TextStyle(
           fontSize: AppConstants.fontSizeExtraLarge,
           fontWeight: FontWeight.w700,
-          color: AppColors.darkTextPrimary,
+          color: colorScheme.textPrimary,
         ),
         titleLarge: TextStyle(
           fontSize: AppConstants.fontSizeTitle,
           fontWeight: FontWeight.w500,
-          color: AppColors.darkTextPrimary,
+          color: colorScheme.textPrimary,
         ),
         bodyLarge: TextStyle(
           fontSize: AppConstants.fontSizeBody,
           fontWeight: FontWeight.w400,
-          color: AppColors.darkTextPrimary,
+          color: colorScheme.textPrimary,
         ),
         bodyMedium: TextStyle(
           fontSize: AppConstants.fontSizeSubheadline,
           fontWeight: FontWeight.w400,
-          color: AppColors.darkTextSecondary,
+          color: colorScheme.textSecondary,
         ),
       ),
       
       // Icon Teması
-      iconTheme: const IconThemeData(
-        color: AppColors.darkIconActive,
+      iconTheme: IconThemeData(
+        color: colorScheme.iconActive,
         size: AppConstants.iconSizeMedium,
       ),
       

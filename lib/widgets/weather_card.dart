@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../providers/theme_provider.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../providers/weather_provider.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
@@ -13,14 +13,22 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    final colors = context.colors; // Temadan renkleri al
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final weatherProvider = context.watch<WeatherProvider>();
     final weatherData = weatherProvider.weatherData;
+    final isLoading = weatherProvider.isLoading;
+    final error = weatherProvider.error;
+
+    // Hata varsa error state göster
+    if (error != null && weatherData == null) {
+      return _buildErrorState(context, colors, isDarkMode, weatherProvider, error);
+    }
 
     // Veri yüklenirken veya hata varsa varsayılan değerler göster
     final temperature = weatherData?.temperature.toStringAsFixed(0) ?? '--';
-    final condition = weatherData?.condition ?? 'Loading...';
-    final emoji = weatherData?.emoji ?? '⏳';
+    final condition = weatherData?.condition ?? (isLoading ? 'Loading...' : 'No Data');
+    final emoji = weatherData?.emoji ?? (isLoading ? '⏳' : '🌈');
     final humidity = weatherData?.humidity.toString() ?? '--';
     final windSpeed = weatherData?.windSpeed.toStringAsFixed(0) ?? '--';
     final aqi = weatherData?.aqi.toString() ?? '--';
@@ -34,12 +42,12 @@ class WeatherCard extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppConstants.radiusXl),
-          gradient: isDarkMode ? AppColors.darkActiveGradient : AppColors.lightActiveGradient,
+          gradient: colors.activeGradient,
           boxShadow: [
             BoxShadow(
               color: isDarkMode
                   ? Colors.white.withOpacity(0.2)
-                  : AppColors.lightGray500.withOpacity(0.3),
+                  : colors.gray500.withOpacity(0.3),
               blurRadius: AppConstants.radiusXl,
               offset: const Offset(0, 8),
             ),
@@ -96,7 +104,7 @@ class WeatherCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: AppConstants.fontSizeTitle,
                               color: (isDarkMode
-                                      ? AppColors.darkCardBackgroundAlt
+                                      ? colors.cardBackgroundAlt
                                       : Colors.white)
                                   .withOpacity(0.9),
                             ),
@@ -108,7 +116,7 @@ class WeatherCard extends StatelessWidget {
                               fontSize: AppConstants.fontSizeExtraLarge,
                               fontWeight: FontWeight.w700,
                               color: isDarkMode
-                                  ? AppColors.darkCardBackgroundAlt
+                                  ? colors.cardBackgroundAlt
                                   : Colors.white,
                               height: 1.0,
                             ),
@@ -133,17 +141,14 @@ class WeatherCard extends StatelessWidget {
                       _WeatherStat(
                         label: 'AQI',
                         value: aqi,
-                        isDarkMode: isDarkMode,
                       ),
                       _WeatherStat(
                         label: 'Humidity',
                         value: '$humidity%',
-                        isDarkMode: isDarkMode,
                       ),
                       _WeatherStat(
                         label: 'Wind',
                         value: '$windSpeed km/h',
-                        isDarkMode: isDarkMode,
                       ),
                     ],
                   ),
@@ -162,22 +167,135 @@ class WeatherCard extends StatelessWidget {
         )
         .fadeIn(duration: AppConstants.durationNormal.ms);
   }
+
+  /// Hata durumu widget'ı - Retry button ile
+  Widget _buildErrorState(
+    BuildContext context,
+    AppColorScheme colors,
+    bool isDarkMode,
+    WeatherProvider weatherProvider,
+    String errorMessage,
+  ) {
+    return GestureDetector(
+      onTap: () => weatherProvider.refresh(),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(AppConstants.radiusXl),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppConstants.radiusXl),
+          gradient: colors.activeGradient,
+          boxShadow: [
+            BoxShadow(
+              color: isDarkMode
+                  ? Colors.white.withOpacity(0.2)
+                  : colors.gray500.withOpacity(0.3),
+              blurRadius: AppConstants.radiusXl,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Error Icon
+            Icon(
+              LucideIcons.cloudOff,
+              size: 48,
+              color: (isDarkMode ? colors.cardBackgroundAlt : Colors.white)
+                  .withOpacity(0.9),
+            ),
+            const SizedBox(height: AppConstants.spacingLg),
+
+            // Error Title
+            Text(
+              'Weather Unavailable',
+              style: TextStyle(
+                fontSize: AppConstants.fontSizeTitle,
+                fontWeight: FontWeight.w600,
+                color: isDarkMode ? colors.cardBackgroundAlt : Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppConstants.spacingSm),
+
+            // Error Message
+            Text(
+              'Tap to retry',
+              style: TextStyle(
+                fontSize: AppConstants.fontSizeSubheadline,
+                color: (isDarkMode ? colors.cardBackgroundAlt : Colors.white)
+                    .withOpacity(0.8),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppConstants.spacingLg),
+
+            // Retry Button
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppConstants.radiusXl,
+                vertical: AppConstants.spacingSm,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppConstants.radiusFull),
+                color: (isDarkMode ? colors.cardBackgroundAlt : Colors.white)
+                    .withOpacity(0.2),
+                border: Border.all(
+                  color: (isDarkMode ? colors.cardBackgroundAlt : Colors.white)
+                      .withOpacity(0.5),
+                  width: 1.5,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    LucideIcons.refreshCw,
+                    size: 16,
+                    color: isDarkMode ? colors.cardBackgroundAlt : Colors.white,
+                  ),
+                  const SizedBox(width: AppConstants.spacingSm),
+                  Text(
+                    'Retry',
+                    style: TextStyle(
+                      fontSize: AppConstants.fontSizeSubheadline,
+                      fontWeight: FontWeight.w600,
+                      color:
+                          isDarkMode ? colors.cardBackgroundAlt : Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      )
+          .animate()
+          .scale(
+            duration: AppConstants.durationNormal.ms,
+            begin: const Offset(0.95, 0.95),
+            curve: Curves.easeOut,
+          )
+          .fadeIn(duration: AppConstants.durationNormal.ms),
+    );
+  }
 }
 
 /// Hava durumu istatistik bilgisi
 class _WeatherStat extends StatelessWidget {
   final String label;
   final String value;
-  final bool isDarkMode;
 
   const _WeatherStat({
     required this.label,
     required this.value,
-    required this.isDarkMode,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors; // Temadan renkleri al
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -185,7 +303,7 @@ class _WeatherStat extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: AppConstants.fontSizeSubheadline,
-            color: (isDarkMode ? AppColors.darkCardBackgroundAlt : Colors.white)
+            color: (isDarkMode ? colors.cardBackgroundAlt : Colors.white)
                 .withOpacity(0.8),
           ),
         ),
@@ -195,12 +313,10 @@ class _WeatherStat extends StatelessWidget {
           style: TextStyle(
             fontSize: AppConstants.fontSizeSubheadline,
             fontWeight: FontWeight.w600,
-            color: isDarkMode ? AppColors.darkCardBackgroundAlt : Colors.white,
+            color: isDarkMode ? colors.cardBackgroundAlt : Colors.white,
           ),
         ),
       ],
     );
   }
 }
-
-
