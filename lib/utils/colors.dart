@@ -13,8 +13,11 @@ class AppColors {
   static const Color darkCardBackground = Color(0xFF1F2937); // gray-800
   static const Color darkCardBackgroundAlt = Color(0xFF111827); // gray-900
   
+  // Soft White (for dark mode - less harsh than pure white)
+  static const Color darkSoftWhite = Color(0xFFE5E7EB); // gray-200 - Soft matte white
+  
   // Text Colors
-  static const Color darkTextPrimary = Color(0xFFFFFFFF); // White
+  static const Color darkTextPrimary = Color(0xFFE5E7EB); // Soft White (was pure white)
   static const Color darkTextSecondary = Color(0xFF9CA3AF); // gray-400
   static const Color darkTextTertiary = Color(0xFF6B7280); // gray-500
   
@@ -23,7 +26,7 @@ class AppColors {
   
   // Inactive Icons
   static const Color darkIconInactive = Color(0xFF9CA3AF); // gray-400
-  static const Color darkIconActive = Color(0xFFFFFFFF); // White
+  static const Color darkIconActive = Color(0xFFE5E7EB); // Soft White (was pure white)
   
   // Additional Dark Colors
   static const Color darkGray700 = Color(0xFF374151);
@@ -128,14 +131,14 @@ class AppColors {
   // ACTIVE ELEMENT GRADIENTS
   // ============================================================================
   
-  // Dark Mode Active Gradient (White to gray-200)
+  // Dark Mode Active Gradient (Soft White to gray-200)
   static const LinearGradient darkActiveGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFFFFFFFF), // White
-      Color(0xFFF3F4F6), // gray-100
-      Color(0xFFE5E7EB), // gray-200
+      Color(0xFFE5E7EB), // Soft White (gray-200)
+      Color(0xFFD1D5DB), // gray-300
+      Color(0xFFBFC3C7), // gray-350 (in between)
     ],
   );
   

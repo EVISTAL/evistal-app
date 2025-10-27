@@ -268,10 +268,10 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                 ),
               ],
             ),
-            child: const Icon(
+            child: Icon(
               LucideIcons.bluetooth,
               size: AppConstants.iconSizeMedium,
-              color: Colors.white,
+              color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
             ),
           )
               .animate()
@@ -300,7 +300,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: (isDarkMode 
-                          ? Colors.white 
+                          ? AppColors.darkSoftWhite 
                           : AppColors.primaryLight)
                           .withOpacity(0.3 - (_scanController.value * 0.3)),
                       width: 2,
@@ -317,7 +317,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: (isDarkMode 
-                          ? Colors.white 
+                          ? AppColors.darkSoftWhite 
                           : AppColors.primaryLight)
                           .withOpacity(0.5 - (_scanController.value * 0.5)),
                       width: 2,
@@ -334,7 +334,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: (isDarkMode 
-                          ? Colors.white 
+                          ? AppColors.darkSoftWhite 
                           : AppColors.primaryLight)
                           .withOpacity(0.7 - (_scanController.value * 0.7)),
                       width: 2,
@@ -350,14 +350,14 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(0.3),
-                      (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(0.1),
+                      (isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight).withOpacity(0.3),
+                      (isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight).withOpacity(0.1),
                       Colors.transparent,
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(0.3),
+                      color: (isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight).withOpacity(0.3),
                       blurRadius: 30,
                       spreadRadius: 10,
                     ),
@@ -467,7 +467,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
 
   Widget _buildDeviceCard(BleMockDevice device, bool isDarkMode, int index) {
     final signalStrength = _getSignalStrength(device.rssi);
-    final signalColor = _getSignalColor(device.rssi);
+    final signalColor = _getSignalColor(device.rssi, isDarkMode);
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppConstants.spacingLg),
@@ -478,7 +478,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
             ? AppColors.darkCardBackgroundAlt
             : AppColors.lightGray100,
         border: Border.all(
-          color: (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(0.2),
+          color: (isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight).withOpacity(0.2),
           width: 1,
         ),
         boxShadow: [
@@ -520,9 +520,9 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                 ),
               ],
             ),
-            child: const Icon(
+            child: Icon(
               LucideIcons.bluetooth,
-              color: Colors.white,
+              color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
               size: 28,
             ),
           )
@@ -624,12 +624,12 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                   ),
                 ],
               ),
-              child: const Text(
+              child: Text(
                 'Connect',
                 style: TextStyle(
                   fontSize: AppConstants.fontSizeSubheadline,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
                 ),
               ),
             ),
@@ -664,7 +664,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     ? AppColors.darkCardBackgroundAlt
                     : AppColors.lightGray100),
             border: Border.all(
-              color: (isDarkMode ? Colors.white : AppColors.primaryLight).withOpacity(_isScanning ? 0.1 : 0.3),
+              color: (isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight).withOpacity(_isScanning ? 0.1 : 0.3),
               width: 1.5,
             ),
           ),
@@ -678,7 +678,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                     ? (isDarkMode
                         ? AppColors.darkTextSecondary
                         : AppColors.lightTextSecondary)
-                    : (isDarkMode ? Colors.white : AppColors.primaryLight),
+                    : (isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight),
               ),
               const SizedBox(width: AppConstants.spacingSm),
               Text(
@@ -690,7 +690,7 @@ class _BLEScanScreenState extends State<BLEScanScreen>
                       ? (isDarkMode
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary)
-                      : (isDarkMode ? Colors.white : AppColors.primaryLight),
+                      : (isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight),
                 ),
               ),
             ],
@@ -708,11 +708,21 @@ class _BLEScanScreenState extends State<BLEScanScreen>
     return 1;
   }
 
-  Color _getSignalColor(int rssi) {
-    if (rssi >= -60) return const Color(0xFF22C55E); // Green
-    if (rssi >= -70) return const Color(0xFFFBBF24); // Yellow
-    if (rssi >= -80) return const Color(0xFFF97316); // Orange
-    return const Color(0xFFEF4444); // Red
+  Color _getSignalColor(int rssi, bool isDarkMode) {
+    // Monochrome theme - using opacity to show signal strength
+    if (isDarkMode) {
+      // Dark mode: Soft white with varying opacity
+      if (rssi >= -60) return AppColors.darkSoftWhite; // Strong - Full brightness
+      if (rssi >= -70) return AppColors.darkSoftWhite.withOpacity(0.8); // Good
+      if (rssi >= -80) return AppColors.darkSoftWhite.withOpacity(0.6); // Medium
+      return AppColors.darkSoftWhite.withOpacity(0.4); // Weak
+    } else {
+      // Light mode: Gray with varying shades
+      if (rssi >= -60) return AppColors.primaryLight; // Strong - Darkest gray
+      if (rssi >= -70) return AppColors.primaryLight.withOpacity(0.8); // Good
+      if (rssi >= -80) return AppColors.primaryLight.withOpacity(0.6); // Medium
+      return AppColors.primaryLight.withOpacity(0.4); // Weak
+    }
   }
 }
 
@@ -753,9 +763,9 @@ class _ConnectingDialog extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 LucideIcons.bluetooth,
-                color: Colors.white,
+                color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
                 size: 40,
               ),
             )

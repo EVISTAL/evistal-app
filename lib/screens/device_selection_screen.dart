@@ -123,7 +123,7 @@ class DeviceSelectionScreen extends StatelessWidget {
                                   child: Icon(
                                     isDarkMode ? LucideIcons.sun : LucideIcons.moon,
                                     color: isDarkMode
-                                        ? Colors.white
+                                        ? AppColors.darkSoftWhite
                                         : AppColors.darkCardBackground,
                                     size: AppConstants.iconSizeSmall,
                                   ),
@@ -366,9 +366,9 @@ class _ComingSoonDialog extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
+                    Icon(
                       LucideIcons.check,
-                      color: Colors.white,
+                      color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
                       size: 20,
                     ),
                     const SizedBox(width: AppConstants.spacingSm),
@@ -377,7 +377,7 @@ class _ComingSoonDialog extends StatelessWidget {
                       style: TextStyle(
                         fontSize: AppConstants.fontSizeBody,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
                       ),
                     ),
                   ],

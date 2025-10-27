@@ -123,10 +123,10 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                               width: AppConstants.iconSizeLarge,
                               height: AppConstants.iconSizeLarge,
                               child: Image.asset(
-                                'assets/images/evistal_logo.png',
-                                fit: BoxFit.contain,
-                                color: isDarkMode ? Colors.white : Colors.black,
-                                colorBlendMode: BlendMode.srcIn,
+                              'assets/images/evistal_logo.png',
+                              fit: BoxFit.contain,
+                              color: isDarkMode ? AppColors.darkSoftWhite : Colors.black,
+                              colorBlendMode: BlendMode.srcIn,
                                 errorBuilder: (context, error, stackTrace) {
                                   // Eğer logo yüklenemezse "E" harfi göster
                                   return Container(
@@ -145,11 +145,11 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                                       child: Text(
                                         'E',
                                         style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900,
-                                          color: Colors.white,
-                                        ),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w900,
+                                        color: AppColors.darkSoftWhite,
                                       ),
+                                    ),
                                     ),
                                   );
                                 },
@@ -181,7 +181,7 @@ class _PurifierControlScreenState extends State<PurifierControlScreen> {
                                   boxShadow: [
                                     BoxShadow(
                                       color: (isDarkMode 
-                                          ? Colors.white 
+                                          ? AppColors.darkSoftWhite 
                                           : AppColors.lightGray500).withOpacity(0.4),
                                       blurRadius: 8,
                                       spreadRadius: 1,
@@ -1285,15 +1285,15 @@ class _DeviceInfoPanel extends StatelessWidget {
                   height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.2),
+                    color: AppColors.darkSoftWhite.withOpacity(0.2),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.5),
+                      color: AppColors.darkSoftWhite.withOpacity(0.5),
                       width: 2,
                     ),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     LucideIcons.info,
-                    color: Colors.white,
+                    color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
                     size: 32,
                   ),
                 )
@@ -1310,7 +1310,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                         style: TextStyle(
                           fontSize: AppConstants.fontSizeTitle,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
                         ),
                       )
                           .animate()
@@ -1321,7 +1321,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                         'EVISTAL Smart Humidifier',
                         style: TextStyle(
                           fontSize: AppConstants.fontSizeSubheadline,
-                          color: Colors.white.withOpacity(0.9),
+                          color: (isDarkMode ? AppColors.darkSoftWhite : Colors.white).withOpacity(0.9),
                         ),
                       )
                           .animate()
@@ -1337,11 +1337,11 @@ class _DeviceInfoPanel extends StatelessWidget {
                     height: 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(0.2),
+                      color: (isDarkMode ? AppColors.darkSoftWhite : Colors.white).withOpacity(0.2),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       LucideIcons.x,
-                      color: Colors.white,
+                      color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
                       size: 20,
                     ),
                   ),
@@ -1363,7 +1363,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                   icon: LucideIcons.tag,
                   label: 'VERSION',
                   value: 'v2.1.0',
-                  color: isDarkMode ? Colors.white : AppColors.primaryLight,
+                  color: isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight,
                   isDarkMode: isDarkMode,
                   delay: 200,
                 ),
@@ -1374,7 +1374,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                   icon: LucideIcons.hash,
                   label: 'ID',
                   value: 'EV-2024-A1F2B3',
-                  color: isDarkMode ? Colors.white : AppColors.primaryLight,
+                  color: isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight,
                   isDarkMode: isDarkMode,
                   delay: 300,
                 ),
@@ -1385,7 +1385,7 @@ class _DeviceInfoPanel extends StatelessWidget {
                   icon: LucideIcons.type,
                   label: 'NAME',
                   value: 'EVISTAL\'s Humidifier',
-                  color: isDarkMode ? Colors.white : AppColors.primaryLight,
+                  color: isDarkMode ? AppColors.darkSoftWhite : AppColors.primaryLight,
                   isDarkMode: isDarkMode,
                   delay: 400,
                 ),
@@ -1463,7 +1463,7 @@ class _DeviceInfoPanel extends StatelessWidget {
             ),
             child: Icon(
               icon,
-              color: Colors.white,
+              color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
               size: 24,
             ),
           ),
@@ -1572,9 +1572,9 @@ class _DisconnectDialog extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 LucideIcons.powerOff,
-                color: Colors.white,
+                color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
                 size: 40,
               ),
             )
@@ -1687,14 +1687,14 @@ class _DisconnectDialog extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: const Text(
+                      child: Text(
                         'Disconnect',
                         style: TextStyle(
-                          fontSize: AppConstants.fontSizeBody,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
+                        fontSize: AppConstants.fontSizeBody,
+                        fontWeight: FontWeight.w700,
+                        color: isDarkMode ? AppColors.darkSoftWhite : Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
                       ),
                     ),
                   ),
